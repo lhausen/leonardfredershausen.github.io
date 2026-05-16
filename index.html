@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leonard Fredershausen — Economics Student</title>
   <meta name="description" content="Leonard Fredershausen — Economics student at the University of Hamburg, focused on sustainability, inequality, and evidence-based policy." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Leonard Fredershausen — Economics Student" />
+  <meta property="og:description" content="Economics student at the University of Hamburg focused on sustainability, inequality, and evidence-based policy." />
+  <meta property="og:url" content="https://leonardfredershausen.github.io/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Leonard Fredershausen — Economics Student" />
+  <meta name="twitter:description" content="Economics student at the University of Hamburg focused on sustainability, inequality, and evidence-based policy." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800&display=swap" rel="stylesheet" />
@@ -19,6 +26,7 @@
     <ul>
       <li><a href="#about">About</a></li>
       <li><a href="#research">Research</a></li>
+      <li><a href="#publications">Publications</a></li>
       <li><a href="#cv">CV</a></li>
       <li><a href="blog/index.html">Blog</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -96,6 +104,61 @@
         leakage policy — finding a potential ~33% reduction in leakage from a
         specific regulatory mechanism.
       </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── PUBLICATIONS ── -->
+<section id="publications" class="light">
+  <div class="section-inner">
+    <p class="section-label">Publications & Projects</p>
+    <h2 class="section-title">Academic Work</h2>
+    <p class="section-subtitle">Term papers, theses, and policy work produced during my studies.</p>
+
+    <div class="pub-card fade-up">
+      <div class="pub-card-header">
+        <h3>How Effective is Hamburg's Solar Roof Mandate?</h3>
+        <span class="pub-status status-progress">In Progress</span>
+      </div>
+      <p class="pub-meta">Bachelor's Thesis · Universität Hamburg · 2026 · Supervisor: Prof. Lange</p>
+      <p>Staggered difference-in-differences analysis estimating the causal effect of Hamburg's Solardachpflicht on residential solar PV adoption, comparing Hamburg against six surrounding Landkreise using Marktstammdatenregister data at the PLZ × month level.</p>
+      <div class="tag-row">
+        <span class="tag">Difference-in-Differences</span>
+        <span class="tag">Energy Policy</span>
+        <span class="tag">R</span>
+        <span class="tag">MaStR Data</span>
+        <span class="tag">Causal Inference</span>
+      </div>
+    </div>
+
+    <div class="pub-card fade-up">
+      <div class="pub-card-header">
+        <h3>Effectiveness of SSB Taxes in Reducing Obesity among Children and Adolescents (aged 5–19)</h3>
+        <span class="pub-status status-done">Completed</span>
+      </div>
+      <p class="pub-meta">Term Paper · Global Health Politics · Universität Hamburg · March 2024 · Supervisor: Prof. Dr. Max Schaub</p>
+      <p>Difference-in-differences panel study using WHO Global Health Observatory data from 2000–2022, comparing obesity prevalence in the UK and Ireland (treatment) against Germany and Switzerland (control) following the introduction of sugar-sweetened beverage taxes in 2018. The ATET was estimated at −0.181 pp but was not statistically significant (p > 0.05), suggesting broader complementary policies are needed.</p>
+      <div class="tag-row">
+        <span class="tag">Difference-in-Differences</span>
+        <span class="tag">Health Economics</span>
+        <span class="tag">Stata</span>
+        <span class="tag">Panel Data</span>
+        <span class="tag">Public Health Policy</span>
+      </div>
+    </div>
+
+    <div class="pub-card fade-up">
+      <div class="pub-card-header">
+        <h3>Bürgergeld: Daten- und Faktenüberblick</h3>
+        <span class="pub-status status-done">Completed</span>
+      </div>
+      <p class="pub-meta">Policy Brief · November 2024</p>
+      <p>A data-driven fact-check of Germany's Bürgergeld welfare programme, summarising key figures on recipient distribution, labour market availability, costs (5.56% of the federal budget), and common misconceptions — drawing on official sources including the BA, BMAS, ifo Institut, and the Bundesregierung.</p>
+      <div class="tag-row">
+        <span class="tag">Social Policy</span>
+        <span class="tag">Labour Economics</span>
+        <span class="tag">Data Visualisation</span>
+      </div>
     </div>
   </div>
 </section>
@@ -231,6 +294,10 @@
   </div>
 </section>
 
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
 <footer>
   <p>© 2026 Leonard Fredershausen</p>
 </footer>
@@ -253,12 +320,13 @@
 
   // Active nav highlight via IntersectionObserver
   const navLinks = {
-    about:    document.querySelector('nav a[href="#about"]'),
-    research: document.querySelector('nav a[href="#research"]'),
-    cv:       document.querySelector('nav a[href="#cv"]'),
-    contact:  document.querySelector('nav a[href="#contact"]'),
+    about:        document.querySelector('nav a[href="#about"]'),
+    research:     document.querySelector('nav a[href="#research"]'),
+    publications: document.querySelector('nav a[href="#publications"]'),
+    cv:           document.querySelector('nav a[href="#cv"]'),
+    contact:      document.querySelector('nav a[href="#contact"]'),
   };
-  const sectionIds = ['about', 'research', 'cv', 'contact'];
+  const sectionIds = ['about', 'research', 'publications', 'cv', 'contact'];
   const activeSections = new Set();
   const navObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
@@ -324,6 +392,13 @@
   }
   // Start after initial pause so first text is readable
   setTimeout(tick, PAUSE_AFTER_TYPE);
+
+  // Scroll to top button
+  const scrollTopBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+  scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
 </body>
 </html>
