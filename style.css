@@ -838,12 +838,12 @@ footer {
   border: none;
   cursor: pointer;
   padding: 4px;
-  color: rgba(255,255,255,0.75);
+  color: #f8fafc;
   flex-shrink: 0;
   transition: color 0.3s;
 }
 
-nav.scrolled .nav-toggle { color: var(--muted); }
+nav.scrolled .nav-toggle { color: var(--text); }
 
 .nav-toggle span {
   display: block;
