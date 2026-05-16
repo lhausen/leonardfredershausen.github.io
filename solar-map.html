@@ -214,20 +214,32 @@
   }).addTo(map);
 
   function getColor(value, max) {
-    if (!value || value === 0) return '#e0e7ef';
-    const t = Math.min(value / max, 1);
-    const r = Math.round(219 + (37 - 219) * t);
-    const g = Math.round(234 + (99 - 234) * t);
-    const b = Math.round(254 + (235 - 254) * t);
+    if (!value || value === 0) return '#f1f5f9';
+    // Square root scaling so mid-range values show more contrast
+    const t = Math.min(Math.sqrt(value / max), 1);
+    // Light sky (#e0f2fe) → vivid blue (#2563eb) → deep navy (#0c2340)
+    const stops = [
+      [224, 242, 254],  // 0%  — very light blue
+      [147, 197, 253],  // 33% — light blue
+      [37,  99,  235],  // 66% — accent blue
+      [12,  35,  64],   // 100% — deep navy
+    ];
+    const scaled = t * (stops.length - 1);
+    const lo = Math.floor(scaled);
+    const hi = Math.min(lo + 1, stops.length - 1);
+    const f = scaled - lo;
+    const r = Math.round(stops[lo][0] + (stops[hi][0] - stops[lo][0]) * f);
+    const g = Math.round(stops[lo][1] + (stops[hi][1] - stops[lo][1]) * f);
+    const b = Math.round(stops[lo][2] + (stops[hi][2] - stops[lo][2]) * f);
     return `rgb(${r},${g},${b})`;
   }
 
-  function getMax(data, key) {
-    return Math.max(...Object.values(data).map(d => d[key] || 0));
+  function getSharedMax(data) {
+    // Use the post-mandate max as the shared ceiling so pre looks genuinely lighter
+    return Math.max(...Object.values(data).map(d => d.post_mandate || 0)) || 1;
   }
 
   function getVal(plz) {
-    // ensure string key lookup
     const d = solarData[String(plz)];
     if (!d) return 0;
     return mode === 'pre' ? d.pre_mandate : d.post_mandate;
@@ -236,8 +248,7 @@
   function styleFeature(feature) {
     const plz = feature.properties.plz;
     const val = getVal(plz);
-    const key = mode === 'pre' ? 'pre_mandate' : 'post_mandate';
-    const max = getMax(solarData, key) || 1;
+    const max = getSharedMax(solarData);
     return {
       fillColor: getColor(val, max),
       fillOpacity: 0.85,
