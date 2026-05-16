@@ -208,7 +208,12 @@ nav.scrolled .lang-toggle:hover { background: var(--bg-subtle); color: var(--tex
   height: 100%;
   pointer-events: none;
   opacity: 0.5;
+  z-index: 0;
 }
+
+#about::after { z-index: 1; }
+
+#about .section-inner { z-index: 2; }
 
 /* ── HERO ── */
 #about {
