@@ -831,17 +831,15 @@ footer {
 /* ── HAMBURGER TOGGLE ── */
 .nav-toggle {
   display: none;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 5px;
   background: none;
   border: none;
   outline: none;
   -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
-  padding: 6px;
-  width: 36px;
-  height: 36px;
+  padding: 4px;
   color: #f8fafc !important;
   flex-shrink: 0;
   transition: color 0.3s;
@@ -849,18 +847,9 @@ footer {
 
 nav.scrolled .nav-toggle { color: var(--text) !important; }
 
-.nav-toggle span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  background: currentColor;
-  border-radius: 1px;
-  transition: transform 0.25s, opacity 0.2s;
-}
-
-.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.nav-toggle.open span:nth-child(2) { opacity: 0; }
-.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-toggle .icon-x { display: none; }
+.nav-toggle.open .icon-ham { display: none; }
+.nav-toggle.open .icon-x { display: block; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 640px) {
