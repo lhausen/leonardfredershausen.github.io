@@ -479,12 +479,28 @@ h2.section-title {
 .pub-card-link h3 { transition: color 0.15s; }
 .pub-card-link:hover h3 { color: var(--accent); }
 
+.pub-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+  align-items: center;
+}
+
 .pub-read-more {
-  margin-top: 1rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--accent);
-  transition: gap 0.15s;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.pub-read-more:hover { opacity: 0.75; }
+
+.pub-read-more-alt {
+  color: var(--muted);
+  border-left: 1px solid var(--border);
+  padding-left: 1rem;
 }
 .pub-card h3 { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); }
 .pub-status { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }

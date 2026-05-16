@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hamburg Solar Adoption Map — Leonard Fredershausen</title>
+  <meta name="description" content="Interactive map of private solar PV adoption by postal code in Hamburg, 2019–2024." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    .map-page { padding: calc(var(--nav-h) + 2rem) 3rem 4rem; max-width: var(--max-w); margin: 0 auto; }
+
+    .map-header { margin-bottom: 1.5rem; }
+    .map-header .section-label { margin-bottom: 0.35rem; }
+    .map-header h1 { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
+    .map-header p { font-size: 0.9375rem; color: var(--muted); line-height: 1.6; max-width: 580px; }
+
+    .map-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .map-controls span { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-right: 0.25rem; }
+
+    .map-btn {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .map-btn:hover { border-color: var(--accent-border); color: var(--accent); }
+    .map-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    #map {
+      width: 100%;
+      height: 520px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .map-legend {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .legend-bar {
+      height: 10px;
+      width: 180px;
+      border-radius: 999px;
+      background: linear-gradient(to right, #dbeafe, #2563eb);
+      flex-shrink: 0;
+    }
+
+    .map-note {
+      margin-top: 1.25rem;
+      font-size: 0.8125rem;
+      color: var(--muted-light);
+      line-height: 1.55;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    /* Leaflet tooltip override */
+    .leaflet-tooltip {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8125rem;
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      line-height: 1.5;
+    }
+
+    .tt-plz { font-weight: 700; font-size: 0.875rem; margin-bottom: 0.2rem; }
+    .tt-row { color: #555; }
+    .tt-val { font-weight: 600; color: #111; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .map-page { padding: calc(var(--nav-h) + 1.5rem) 1.5rem 3rem; }
+      #map { height: 380px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="index.html">
+      <svg width="34" height="34" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Home">
+        <defs><clipPath id="nc"><circle cx="100" cy="100" r="95"/></clipPath></defs>
+        <circle cx="100" cy="100" r="91" fill="none" stroke="currentColor" stroke-width="10"/>
+        <g clip-path="url(#nc)" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="74,13 44,118 104,118"/>
+          <line x1="118" y1="65" x2="85" y2="190"/>
+          <line x1="118" y1="65" x2="184" y2="65"/>
+          <line x1="104" y1="118" x2="148" y2="118"/>
+        </g>
+      </svg>
+    </a>
+    <ul>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#cv">CV</a></li>
+      <li><a href="blog/index.html">Blog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><a class="nav-cv-btn" href="Leonard_Fredershausen_CV.pdf" download>Download CV</a></li>
+      <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <svg class="icon-ham" width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="2" y1="5" x2="18" y2="5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="15" x2="18" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="icon-x" width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="3" y1="3" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="3" x2="3" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="map-page">
+  <a class="back-link" href="index.html#research">← Back to Research</a>
+
+  <div class="map-header">
+    <p class="section-label">Thesis Data</p>
+    <h1>Hamburg Solar Adoption by Postal Code</h1>
+    <p>Private residential solar PV installations (excl. balcony systems ≤ 0.8 kW) from the Marktstammdatenregister. Hover over a postal code area for details.</p>
+  </div>
+
+  <div class="map-controls">
+    <span>Show:</span>
+    <button class="map-btn active" id="btn-pre">Pre-mandate (2019–2022)</button>
+    <button class="map-btn" id="btn-post">Post-mandate (2023+)</button>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="map-legend">
+    <span>Fewer installations</span>
+    <div class="legend-bar"></div>
+    <span>More installations</span>
+  </div>
+
+  <p class="map-note">
+    Data: Marktstammdatenregister (MaStR), filtered to private operators, excluding balcony solar (≤ 0.8 kW net capacity). PLZ boundaries: © OpenStreetMap contributors. Analysis for bachelor's thesis "How Effective is Hamburg's Solar Roof Mandate?" (University of Hamburg, 2026).
+  </p>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // Nav + theme
+  const nav = document.querySelector('nav');
+  nav.classList.add('scrolled');
+
+  const themeToggle = document.getElementById('themeToggle');
+  function applyTheme(dark) { document.documentElement.setAttribute('data-theme', dark ? 'dark' : ''); }
+  applyTheme(localStorage.getItem('theme') === 'dark');
+  themeToggle.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') !== 'dark';
+    applyTheme(next); localStorage.setItem('theme', next ? 'dark' : 'light');
+  });
+
+  const navToggle = document.getElementById('navToggle');
+  const navUl = document.querySelector('nav ul');
+  if (navToggle) {
+    navToggle.addEventListener('click', () => { navToggle.classList.toggle('open'); navUl.classList.toggle('open'); });
+    document.addEventListener('click', (e) => { if (!e.target.closest('nav')) { navToggle.classList.remove('open'); navUl.classList.remove('open'); } });
+  }
+
+  // Load data and build map
+  let mode = 'pre';
+  let geojsonLayer = null;
+  let solarData = {};
+
+  const map = L.map('map', {
+    center: [53.55, 10.00],
+    zoom: 11,
+    zoomControl: true,
+    scrollWheelZoom: false
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 14
+  }).addTo(map);
+
+  function getColor(value, max) {
+    if (!value || value === 0) return '#e0e7ef';
+    const t = Math.min(value / max, 1);
+    const r = Math.round(219 + (37 - 219) * t);
+    const g = Math.round(234 + (99 - 234) * t);
+    const b = Math.round(254 + (235 - 254) * t);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function getMax(data, key) {
+    return Math.max(...Object.values(data).map(d => d[key] || 0));
+  }
+
+  function getVal(plz) {
+    // ensure string key lookup
+    const d = solarData[String(plz)];
+    if (!d) return 0;
+    return mode === 'pre' ? d.pre_mandate : d.post_mandate;
+  }
+
+  function styleFeature(feature) {
+    const plz = feature.properties.plz;
+    const val = getVal(plz);
+    const key = mode === 'pre' ? 'pre_mandate' : 'post_mandate';
+    const max = getMax(solarData, key) || 1;
+    return {
+      fillColor: getColor(val, max),
+      fillOpacity: 0.85,
+      color: '#64748b',
+      weight: 1
+    };
+  }
+
+  function onEachFeature(feature, layer) {
+    layer.on({
+      mouseover(e) {
+        const l = e.target;
+        l.setStyle({ weight: 2.5, color: '#2563eb', fillOpacity: 0.95 });
+        const plz = String(feature.properties.plz);
+        const d = solarData[plz] || {};
+        l.bindTooltip(`
+          <div class="tt-plz">PLZ ${plz}</div>
+          <div class="tt-row">Pre-mandate (2019–2022): <span class="tt-val">${d.pre_mandate || 0} installations</span></div>
+          <div class="tt-row">Post-mandate (2023+): <span class="tt-val">${d.post_mandate || 0} installations</span></div>
+        `, { sticky: true, opacity: 1 }).openTooltip();
+      },
+      mouseout(e) {
+        geojsonLayer.resetStyle(e.target);
+        e.target.closeTooltip();
+      }
+    });
+  }
+
+  Promise.all([
+    fetch('hamburg_plz.json').then(r => r.json()),
+    fetch('solar_data.json').then(r => r.json())
+  ]).then(([geo, data]) => {
+    solarData = data;
+    geojsonLayer = L.geoJSON(geo, {
+      style: styleFeature,
+      onEachFeature
+    }).addTo(map);
+  }).catch(err => console.error('Map data load error:', err));
+
+  function updateMap() {
+    if (geojsonLayer) geojsonLayer.setStyle(styleFeature);
+  }
+
+  document.getElementById('btn-pre').addEventListener('click', () => {
+    mode = 'pre';
+    document.getElementById('btn-pre').classList.add('active');
+    document.getElementById('btn-post').classList.remove('active');
+    updateMap();
+  });
+
+  document.getElementById('btn-post').addEventListener('click', () => {
+    mode = 'post';
+    document.getElementById('btn-post').classList.add('active');
+    document.getElementById('btn-pre').classList.remove('active');
+    updateMap();
+  });
+</script>
+</body>
+</html>
