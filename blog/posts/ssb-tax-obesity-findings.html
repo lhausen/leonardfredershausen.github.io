@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Do Sugar Taxes Reduce Childhood Obesity? What the Data Says — Leonard Fredershausen</title>
+  <meta name="description" content="Key findings from a difference-in-differences study on SSB taxes and childhood obesity in the UK, Ireland, Germany, and Switzerland." />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Do Sugar Taxes Reduce Childhood Obesity? What the Data Says" />
+  <meta property="og:description" content="Key findings from a difference-in-differences study on SSB taxes and childhood obesity in the UK, Ireland, Germany, and Switzerland." />
+  <meta property="og:url" content="https://leonardfredershausen.github.io/blog/posts/ssb-tax-obesity-findings.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Do Sugar Taxes Reduce Childhood Obesity? What the Data Says" />
+  <meta name="twitter:description" content="Key findings from a difference-in-differences study on SSB taxes and childhood obesity in the UK, Ireland, Germany, and Switzerland." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="../../post.css" />
+  <style>
+    .result-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      margin: 1.75rem 0;
+      background: var(--bg-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+    }
+    .result-box.null::before { background: #f59e0b; }
+    .result-box.valid::before { background: #10b981; }
+    .result-box-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .result-box.null .result-box-label { color: #d97706; }
+    .result-box.valid .result-box-label { color: #059669; }
+    .result-box p {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+    .result-box strong { color: var(--text); }
+    .stat-inline {
+      display: inline-block;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+      border-radius: 6px;
+      padding: 0.1rem 0.45rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      font-style: normal;
+    }
+  </style>
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="../../index.html">Leonard Fredershausen</a>
+    <ul>
+      <li><a href="../../index.html#about">About</a></li>
+      <li><a href="../../index.html#research">Research</a></li>
+      <li><a href="../../index.html#publications">Publications</a></li>
+      <li><a href="../../index.html#cv">CV</a></li>
+      <li><a href="../../blog/index.html">Blog</a></li>
+      <li><a href="../../index.html#contact">Contact</a></li>
+      <li><a class="nav-cv-btn" href="../../Leonard_Fredershausen_CV.pdf" download>Download CV</a></li>
+      <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button></li>
+    </ul>
+  </div>
+</nav>
+
+<article class="post-layout">
+  <div class="post-inner">
+
+    <a class="post-back" href="../../blog/index.html">← Back to Blog</a>
+
+    <header class="post-header">
+      <div class="post-tag-chip">Research</div>
+      <h1 class="post-title">Do Sugar Taxes Reduce Childhood Obesity? What the Data Says</h1>
+      <p class="post-meta">March 2024 · <span id="reading-time">5 min read</span></p>
+    </header>
+
+    <div class="post-body">
+
+      <p>
+        Taxes on sugar-sweetened beverages (SSBs) are one of the most widely discussed
+        tools in public health policy. Over 85 countries have some form of SSB tax in place,
+        and the WHO actively encourages others to follow. The underlying logic is intuitive:
+        make sugary drinks more expensive, people drink less of them, and obesity rates fall.
+        But does the data actually support this?
+      </p>
+      <p>
+        For my Global Health Politics term paper, I ran a difference-in-differences analysis
+        to find out. Here are the key findings.
+      </p>
+
+      <h2>The setup</h2>
+      <p>
+        The UK and Ireland introduced SSB taxes in 2018. This gave me a natural experiment:
+        two countries with a new policy intervention, and two comparable countries without
+        one — Germany and Switzerland — that serve as the control group. Using WHO Global
+        Health Observatory data on obesity prevalence among children and adolescents aged
+        5–19, I tracked all four countries from 2000 to 2022 (<em>n</em> = 92 country-year
+        observations).
+      </p>
+      <p>
+        The DiD framework compares the change in obesity rates in the treatment countries
+        (UK, Ireland) before and after 2018, against the change over the same period in the
+        control countries (Germany, Switzerland). If the tax had an effect, we would expect
+        the treatment group to diverge downward from the control group after 2018.
+      </p>
+
+      <h2>Validating the design</h2>
+      <p>
+        Before interpreting the results, I needed to check whether the DiD design was valid.
+        The core assumption is <em>parallel trends</em>: that treatment and control countries
+        were on similar obesity trajectories before the tax came in.
+      </p>
+
+      <div class="result-box valid">
+        <div class="result-box-label">Assumption holds</div>
+        <p>The parallel trends test returned <strong class="stat-inline">p = 0.773</strong>, giving no reason to reject the assumption. The pre-treatment obesity trends across all four countries were statistically indistinguishable.</p>
+      </div>
+
+      <p>
+        This matters: if the trends had already been diverging before 2018, any post-2018
+        difference could not be cleanly attributed to the tax.
+      </p>
+
+      <h2>The main result</h2>
+      <p>
+        The DiD regression estimated the Average Treatment Effect on the Treated (ATET) —
+        that is, the additional change in obesity prevalence in the UK and Ireland that can be
+        attributed to the SSB tax, relative to what would have happened without it.
+      </p>
+
+      <div class="result-box null">
+        <div class="result-box-label">Main finding — null result</div>
+        <p>ATET = <strong class="stat-inline">−0.181 pp</strong> &nbsp;·&nbsp; <strong class="stat-inline">p = 0.38</strong><br><br>
+        The estimated effect points in the right direction — a small reduction in obesity prevalence — but it is not statistically significant. The data cannot rule out that this effect is simply noise.</p>
+      </div>
+
+      <p>
+        A Granger causality test confirmed this: there was no significant evidence
+        (<em class="stat-inline">p = 0.233</em>) that changes in obesity rates followed from
+        the introduction of SSB taxes rather than from other concurrent trends.
+      </p>
+
+      <h2>Why might this be?</h2>
+      <p>
+        A null result doesn't mean the tax did nothing — it means the study couldn't detect
+        an effect. Several factors could explain the gap between theory and findings:
+      </p>
+      <p>
+        <strong>Tax level.</strong> The UK's soft drinks levy charges between 18p and 24p per
+        litre depending on sugar content. Modelling studies suggest that much steeper taxes
+        (around 20% price increases) may be needed to shift behaviour enough to affect
+        obesity rates at the population level.
+      </p>
+      <p>
+        <strong>Complementary policies.</strong> SSB taxes rarely operate in isolation.
+        Their effectiveness likely depends on accompanying measures — nutritional education,
+        restrictions on marketing to children, improved access to healthier food. Without
+        these, the isolated effect of a tax may be too small to detect.
+      </p>
+      <p>
+        <strong>Time horizon.</strong> Obesity is a slow-moving outcome. The tax was
+        introduced in 2018 and my data runs to 2022 — just four years of post-treatment
+        observations. Population-level changes in BMI may take a decade or more to
+        materialise in the data.
+      </p>
+      <p>
+        <strong>Substitution effects.</strong> Consumers may compensate by increasing
+        caloric intake elsewhere. If a family switches from Coke to cheaper, equally
+        caloric fruit juices or snacks, the net effect on obesity could be negligible.
+      </p>
+
+      <h2>What this doesn't mean</h2>
+      <p>
+        A null result in one study is not evidence that SSB taxes are ineffective. Other
+        research — including Rogers et al. (2023) on the UK levy specifically — does find
+        associations with reduced obesity prevalence in younger school children. My study
+        covered the 5–19 age group in aggregate, which may mask heterogeneous effects
+        across different sub-groups.
+      </p>
+      <p>
+        The findings are also constrained by the small number of countries (four) and the
+        reliance on BMI as the outcome measure — BMI is a useful proxy but imperfectly
+        captures body composition, especially in growing adolescents.
+      </p>
+
+      <h2>The bottom line</h2>
+      <p>
+        SSB taxes are a promising and relatively easy-to-implement policy instrument, but
+        the evidence that they reduce childhood obesity on their own, within a short
+        timeframe, is not yet conclusive. The most defensible interpretation is that they
+        are one necessary piece of a broader strategy — not a standalone solution.
+      </p>
+      <p>
+        Whether they work better in combination with other interventions, over longer
+        timescales, or at higher tax rates are exactly the questions future research should
+        focus on.
+      </p>
+
+    </div>
+
+    <footer class="post-footer">
+      <p style="font-size:0.8125rem; color:var(--muted-light); margin-bottom:1rem;">
+        This post summarises findings from a term paper submitted for Global Health Politics at the University of Hamburg (March 2024, supervisor: Prof. Dr. Max Schaub). Data source: WHO Global Health Observatory. Analysis conducted in Stata 18.
+      </p>
+      <a class="post-back" href="../../blog/index.html">← Back to Blog</a>
+    </footer>
+
+  </div>
+</article>
+
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script>
+  const nav = document.querySelector('nav');
+  function updateNav() { nav.classList.toggle('scrolled', window.scrollY > 10); }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  const themeToggle = document.getElementById('themeToggle');
+  function applyTheme(dark) { document.documentElement.setAttribute('data-theme', dark ? 'dark' : ''); }
+  applyTheme(localStorage.getItem('theme') === 'dark');
+  themeToggle.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') !== 'dark';
+    applyTheme(next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
+  });
+
+  const scrollTopBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+  scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const progressBar = document.getElementById('readingProgress');
+  const article = document.querySelector('article');
+  function updateProgress() {
+    const articleTop = article.getBoundingClientRect().top + window.scrollY;
+    const viewable = article.scrollHeight - window.innerHeight;
+    const pct = viewable > 0 ? Math.min(100, Math.max(0, ((window.scrollY - articleTop) / viewable) * 100)) : 100;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  (function() {
+    const body = document.querySelector('.post-body');
+    if (!body) return;
+    const words = body.innerText.trim().split(/\s+/).length;
+    const mins = Math.max(1, Math.round(words / 200));
+    const el = document.getElementById('reading-time');
+    if (el) el.textContent = mins + ' min read';
+  })();
+</script>
+</body>
+</html>
