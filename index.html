@@ -43,6 +43,7 @@
       <li><a href="blog/index.html">Blog</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a class="nav-cv-btn" href="Leonard_Fredershausen_CV.pdf" download>Download CV</a></li>
+      <li><button class="lang-toggle" id="langToggle" aria-label="Switch language">EN</button></li>
       <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
         <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -57,10 +58,11 @@
 
 <!-- ── HERO ── -->
 <section id="about">
+  <canvas id="hero-canvas"></canvas>
   <div class="section-inner">
-    <p class="hero-eyebrow fade-up"><span id="typewriter-role">Economics Student</span> · Hamburg</p>
+    <p class="hero-eyebrow fade-up"><span id="typewriter-role" data-en="Economics Student" data-de="Wirtschaftsstudent">Economics Student</span> · Hamburg</p>
     <h1 class="hero-name fade-up">Leonard<br><span>Fredershausen</span></h1>
-    <p class="hero-bio fade-up">
+    <p class="hero-bio fade-up" data-en="8th-semester B.Sc. Economics student at the University of Hamburg, focused on sustainability, inequality, and public policy. Experienced in causal inference and data analysis — and trained at making findings accessible to non-technical audiences." data-de="Wirtschaftsstudent im 8. Semester (B.Sc.) an der Universität Hamburg mit Schwerpunkt Nachhaltigkeit, Ungleichheit und evidenzbasierter Politik. Erfahrung in kausaler Inferenz und Datenanalyse — und geübt darin, Ergebnisse für nicht-technische Zielgruppen verständlich zu machen.">
       8th-semester B.Sc. Economics student at the University of Hamburg, focused on
       sustainability, inequality, and public policy. Experienced in
       causal inference and data analysis — and trained at making findings
@@ -76,8 +78,8 @@
 <!-- ── RESEARCH & PUBLICATIONS ── -->
 <section id="research" class="subtle">
   <div class="section-inner">
-    <p class="section-label">Research & Publications</p>
-    <h2 class="section-title">Academic Work</h2>
+    <p class="section-label" data-en="Research & Publications" data-de="Forschung & Publikationen">Research & Publications</p>
+    <h2 class="section-title" data-en="Academic Work" data-de="Akademische Arbeiten">Academic Work</h2>
     <p class="section-subtitle">
       My work focuses on environmental and energy economics, empirical policy evaluation,
       and causal inference methods — DiD, RDD, synthetic control. I'm particularly
@@ -376,6 +378,78 @@
     scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
   }, { passive: true });
   scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // Particle background
+  (function() {
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+    const particles = [];
+    const COUNT = 55;
+    const MAX_DIST = 120;
+
+    function resize() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    for (let i = 0; i < COUNT; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 1.5 + 0.5
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < COUNT; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(96,165,250,0.8)';
+        ctx.fill();
+
+        for (let j = i + 1; j < COUNT; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x, dy = p.y - q.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DIST) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(96,165,250,${0.15 * (1 - dist / MAX_DIST)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // Language toggle
+  const langToggle = document.getElementById('langToggle');
+  let currentLang = localStorage.getItem('lang') || 'en';
+  function applyLang(lang) {
+    currentLang = lang;
+    langToggle.textContent = lang === 'en' ? 'DE' : 'EN';
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.textContent = lang === 'en' ? el.dataset.en : el.dataset.de;
+    });
+    localStorage.setItem('lang', lang);
+  }
+  applyLang(currentLang);
+  langToggle.addEventListener('click', () => applyLang(currentLang === 'en' ? 'de' : 'en'));
 
   // Hamburger menu
   const navToggle = document.getElementById('navToggle');
