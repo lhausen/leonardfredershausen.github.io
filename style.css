@@ -174,16 +174,23 @@ nav.scrolled .theme-toggle:hover {
 }
 
 .lang-toggle {
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
-  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  padding: 0.3rem 0.55rem;
   border-radius: 5px;
   border: 1px solid rgba(255,255,255,0.25);
   background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.85);
   cursor: pointer;
   transition: all 0.15s;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
 }
 .lang-toggle:hover { background: rgba(255,255,255,0.14); color: #fff; }
 nav.scrolled .lang-toggle { border-color: var(--border); background: transparent; color: var(--muted); }
