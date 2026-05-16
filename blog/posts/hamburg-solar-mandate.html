@@ -159,7 +159,8 @@
 
 <script>
   const nav = document.querySelector('nav');
-  function updateNav() { nav.classList.toggle('scrolled', window.scrollY > 10); }
+  nav.classList.add('scrolled');
+  function updateNav() { }
   window.addEventListener('scroll', updateNav, { passive: true });
   updateNav();
 
