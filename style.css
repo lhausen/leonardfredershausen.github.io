@@ -861,7 +861,7 @@ footer {
   .nav-toggle { display: flex; }
 
   nav ul {
-    display: none;
+    display: none !important;
     position: fixed;
     top: var(--nav-h);
     left: 0;
@@ -876,7 +876,7 @@ footer {
     z-index: 99;
   }
 
-  nav ul.open { display: flex; }
+  nav ul.open { display: flex !important; }
 
   nav ul li a,
   nav ul li button.theme-toggle,
