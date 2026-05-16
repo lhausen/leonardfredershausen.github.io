@@ -827,14 +827,79 @@ footer {
 .scroll-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .scroll-top:hover { background: #1d4ed8; }
 
+/* ── HAMBURGER TOGGLE ── */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.2s;
+}
+
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
 /* ── RESPONSIVE ── */
-@media (max-width: 580px) {
-  nav { padding: 0 1rem; }
-  nav ul { gap: 1rem; }
-  #about { padding: 4rem 1.25rem 4rem; }
-  section.light, section.subtle { padding: 4rem 1.25rem; }
-  #contact { padding: 4rem 1.25rem; }
+@media (max-width: 640px) {
+  nav { padding: 0 1.5rem; }
+
+  .nav-toggle { display: flex; }
+
+  nav ul {
+    display: none;
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 1.5rem 1rem;
+    z-index: 99;
+  }
+
+  nav ul.open { display: flex; }
+
+  nav ul li a,
+  nav ul li button.theme-toggle,
+  nav ul li a.nav-cv-btn {
+    display: block;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text) !important;
+    font-size: 0.9375rem;
+    width: 100%;
+    text-align: left;
+    border-radius: 0;
+    background: none !important;
+  }
+
+  nav ul li:last-child a,
+  nav ul li:last-child button { border-bottom: none; }
+
+  #about { padding: calc(var(--nav-h) + 3.5rem) 1.5rem 4rem; }
+  section.light, section.subtle { padding: 4rem 1.5rem; }
+  #contact { padding: 4rem 1.5rem; }
   .cv-item { grid-template-columns: 1fr; padding: 0.75rem 0; }
   .cv-date { margin-bottom: 0.15rem; }
   .contact-card { padding: 2rem 1.5rem; }
+  .contact-links { flex-direction: column; }
 }
