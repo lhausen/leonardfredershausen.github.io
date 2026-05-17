@@ -62,7 +62,7 @@
 
     <div class="post-body">
 
-      <p>
+      <p data-en="My bachelor's thesis asks a deceptively simple question: did Hamburg's solar roof mandate actually cause more solar panels to be installed? It sounds straightforward — compare before and after, check if installations went up. But doing this rigorously turns out to be genuinely hard." data-de="Meine Bachelorarbeit stellt eine vermeintlich einfache Frage: Hat Hamburgs Solardachpflicht tatsächlich dazu geführt, dass mehr Solaranlagen installiert wurden? Klingt simpel — vorher und nachher vergleichen, prüfen ob die Zahlen gestiegen sind. Doch das rigoros zu untersuchen ist schwieriger als gedacht.">
         My bachelor's thesis asks a deceptively simple question: did Hamburg's solar
         roof mandate actually cause more solar panels to be installed? It sounds
         straightforward — compare before and after, check if installations went up.
@@ -70,7 +70,7 @@
       </p>
 
       <h2>The policy</h2>
-      <p>
+      <p data-en="In January 2023, Hamburg became the first German state to mandate solar panels on <em>private</em> residential buildings — not just commercial ones. Most other states either don't mandate private buildings at all, or only introduced that requirement years later. A second wave of the mandate hit in January 2024, extending the obligation to substantial roof renovations (<em>Dachsanierungen</em>)." data-de="Im Januar 2023 wurde Hamburg zum ersten Bundesland, das Solaranlagen auf <em>privaten</em> Wohngebäuden verpflichtend vorschreibt — nicht nur auf Gewerbeobjekten. Die meisten anderen Bundesländer verpflichten private Gebäude gar nicht, oder haben diese Anforderung erst Jahre später eingeführt. Eine zweite Welle folgte im Januar 2024: Die Pflicht wurde auf wesentliche Dachsanierungen (<em>Dachsanierungen</em>) ausgeweitet.">
         In January 2023, Hamburg became the first German state to mandate solar
         panels on <em>private</em> residential buildings — not just commercial
         ones. Most other states either don't mandate private buildings at all, or
@@ -78,14 +78,14 @@
         hit in January 2024, extending the obligation to substantial roof
         renovations (<em>Dachsanierungen</em>).
       </p>
-      <p>
+      <p data-en="On paper, this should be an empiricist's dream: a clear treatment, a clear date, and a comparison group of nearby regions without the same mandate. In practice, it's messier." data-de="Auf dem Papier sollte das der Traum jedes Empirikers sein: eine klare Behandlung, ein klares Datum und eine Vergleichsgruppe benachbarter Regionen ohne dasselbe Mandat. In der Praxis ist es komplizierter.">
         On paper, this should be an empiricist's dream: a clear treatment, a clear
         date, and a comparison group of nearby regions without the same mandate.
         In practice, it's messier.
       </p>
 
       <h2>The identification problem</h2>
-      <p>
+      <p data-en="The core challenge is the EEG reform of 2023. Around the same time Hamburg's mandate came into force, the German federal government removed VAT on residential solar systems and simplified the grid connection rules. The result was a nationwide solar boom — installations roughly tripled across the country. Hamburg went up by 2.9×; the surrounding control regions went up by 3.2×." data-de="Die zentrale Herausforderung ist die EEG-Reform 2023. Zeitgleich mit Hamburgs Mandat entfernte die Bundesregierung die Mehrwertsteuer auf private Solaranlagen und vereinfachte die Netzanschlussregeln. Das Ergebnis: ein bundesweiter Solarboom — die Installationen verdreifachten sich. Hamburg stieg um das 2,9-Fache; die umliegenden Kontrollregionen um das 3,2-Fache.">
         The core challenge is the EEG reform of 2023. Around the same time Hamburg's
         mandate came into force, the German federal government removed VAT on
         residential solar systems and simplified the grid connection rules. The
@@ -93,7 +93,7 @@
         the country. Hamburg went up by 2.9×; the surrounding control regions went
         up by 3.2×.
       </p>
-      <p>
+      <p data-en="That already hints at something interesting (Hamburg grew <em>less</em> than its neighbours in percentage terms, despite the mandate), but the raw comparison is complicated by the fact that Hamburg had already been accelerating before 2023. Separating the mandate's effect from the national tailwind is the central econometric problem of the thesis." data-de="Das deutet bereits auf etwas Interessantes hin (Hamburg wuchs <em>weniger</em> als seine Nachbarn in Prozent, trotz des Mandats), doch der rohe Vergleich wird dadurch erschwert, dass Hamburg bereits vor 2023 auf Wachstumskurs war. Den Effekt des Mandats vom nationalen Rückenwind zu trennen ist das zentrale ökonometrische Problem der Arbeit.">
         That already hints at something interesting (Hamburg grew <em>less</em> than
         its neighbours in percentage terms, despite the mandate), but the raw
         comparison is complicated by the fact that Hamburg had already been
@@ -102,7 +102,7 @@
       </p>
 
       <h2>The design</h2>
-      <p>
+      <p data-en="I'm using a staggered difference-in-differences approach. The treatment unit is Hamburg; the control group is six surrounding Landkreise — four in Schleswig-Holstein (Pinneberg, Segeberg, Stormarn, Herzogtum Lauenburg) and two in Niedersachsen (Harburg, Stade). I observe them at the PLZ × month level from 2019 onwards, which gives me enough pre-treatment data to test parallel trends." data-de="Ich verwende einen gestaffelten Difference-in-Differences-Ansatz. Die Behandlungseinheit ist Hamburg; die Kontrollgruppe sind sechs umliegende Landkreise — vier in Schleswig-Holstein (Pinneberg, Segeberg, Stormarn, Herzogtum Lauenburg) und zwei in Niedersachsen (Harburg, Stade). Ich beobachte sie auf PLZ-×-Monats-Ebene ab 2019, was ausreichend Pre-Treatment-Daten für Parallel-Trends-Tests liefert.">
         I'm using a staggered difference-in-differences approach. The treatment
         unit is Hamburg; the control group is six surrounding Landkreise — four in
         Schleswig-Holstein (Pinneberg, Segeberg, Stormarn, Herzogtum Lauenburg)
@@ -110,7 +110,7 @@
         month level from 2019 onwards, which gives me enough pre-treatment data to
         test parallel trends.
       </p>
-      <p>
+      <p data-en="One useful feature of the control group: Schleswig-Holstein introduced a <em>commercial-only</em> mandate in January 2023. That means commercial installations in SH serve as a built-in placebo — if my estimator picks up a treatment effect for private buildings in Hamburg but not for commercial buildings in SH, that's reassuring. If it fires on both, something is off." data-de="Ein nützliches Merkmal der Kontrollgruppe: Schleswig-Holstein führte im Januar 2023 ein <em>rein gewerbliches</em> Mandat ein. Das bedeutet, gewerbliche Installationen in SH dienen als eingebauter Placebo-Test — wenn mein Schätzer einen Behandlungseffekt bei privaten Gebäuden in Hamburg, aber nicht bei gewerblichen in SH findet, ist das ein gutes Zeichen. Wenn er bei beiden anschlägt, stimmt etwas nicht.">
         One useful feature of the control group: Schleswig-Holstein introduced a
         <em>commercial-only</em> mandate in January 2023. That means commercial
         installations in SH serve as a built-in placebo — if my estimator picks up
@@ -119,7 +119,7 @@
       </p>
 
       <h2>The data</h2>
-      <p>
+      <p data-en="The main data source is the Marktstammdatenregister (MaStR), Germany's national plant register. Every solar installation has to be registered there within a few months of going live. I'm using the commissioning date (<em>Inbetriebnahmedatum</em>), not the registration date, since registration lags average about 17% above one year — using the wrong date would systematically misallocate installations to the wrong month." data-de="Die wichtigste Datenquelle ist das Marktstammdatenregister (MaStR), Deutschlands nationales Anlagenregister. Jede Solaranlage muss dort innerhalb weniger Monate nach Inbetriebnahme registriert werden. Ich verwende das Inbetriebnahmedatum, nicht das Registrierungsdatum, da die Registrierungsverzögerungen im Schnitt über ein Jahr betragen — der falsche Datumsbegriff würde Installationen systematisch falschen Monaten zuordnen.">
         The main data source is the Marktstammdatenregister (MaStR), Germany's
         national plant register. Every solar installation has to be registered
         there within a few months of going live. I'm using the commissioning date
@@ -127,7 +127,7 @@
         registration lags average about 17% above one year — using the wrong date
         would systematically misallocate installations to the wrong month.
       </p>
-      <p>
+      <p data-en="One thing I didn't expect: the explosion of balcony solar panels (<em>Balkonkraftwerke</em>) after 2023. These tiny plug-in units are registered in MaStR like any other installation, which inflates private installation counts dramatically. I filter them out using a 0.8 kW threshold in the regional data and an explicit category flag in the national data." data-de="Was mich überraschte: Die Explosion der Balkon-Solarmodule (<em>Balkonkraftwerke</em>) nach 2023. Diese kleinen Plug-in-Geräte werden im MaStR wie jede andere Anlage registriert und blähen die privaten Installationszahlen dramatisch auf. Ich filtere sie mit einer 0,8-kW-Schwelle in den Regionaldaten und einem expliziten Kategorie-Flag in den Bundesdaten heraus.">
         One thing I didn't expect: the explosion of balcony solar panels
         (<em>Balkonkraftwerke</em>) after 2023. These tiny plug-in units are
         registered in MaStR like any other installation, which inflates private
@@ -137,7 +137,7 @@
       </p>
 
       <h2>What's next</h2>
-      <p>
+      <p data-en="The descriptive analysis is mostly done. The next step is specifying the regression model — I'm deciding between a standard two-way fixed effects estimator and a more robust staggered estimator like Callaway-Sant'Anna, which handles heterogeneous treatment effects across time better. Given that I have two treatment dates (2023 and 2024), the staggered approach is probably the right call." data-de="Die deskriptive Analyse ist weitgehend abgeschlossen. Der nächste Schritt ist die Spezifikation des Regressionsmodells — ich entscheide mich zwischen einem Standard-Two-Way-Fixed-Effects-Schätzer und einem robusteren gestaffelten Schätzer wie Callaway-Sant'Anna, der heterogene Behandlungseffekte über die Zeit besser handhabt. Angesichts zweier Behandlungsdaten (2023 und 2024) ist der gestaffelte Ansatz wahrscheinlich die richtige Wahl.">
         The descriptive analysis is mostly done. The next step is specifying the
         regression model — I'm deciding between a standard two-way fixed effects
         estimator and a more robust staggered estimator like Callaway-Sant'Anna,
@@ -145,7 +145,7 @@
         that I have two treatment dates (2023 and 2024), the staggered approach is
         probably the right call.
       </p>
-      <p>
+      <p data-en="More updates to follow as the results come in." data-de="Weitere Updates folgen, sobald die Ergebnisse vorliegen.">
         More updates to follow as the results come in.
       </p>
 
@@ -255,7 +255,7 @@
       currentLang = lang;
       langToggle.textContent = lang === 'en' ? 'DE' : 'EN';
       document.querySelectorAll('[data-en]').forEach(el => {
-        el.textContent = lang === 'en' ? el.dataset.en : el.dataset.de;
+        el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.de;
       });
       localStorage.setItem('lang', lang);
     }

@@ -258,7 +258,7 @@
     <img src="13715472_online-rechner-so-hoch-faellt-das-neue-buergergeld-aus_shift-644x362-1288w_1CIQkF_Nf7C0t.webp" alt="Bürgergeld" class="post-hero-img">
 
     <div class="post-body">
-      <p>
+      <p data-en="In the public debate about Bürgergeld, many claims circulate. This fact-check summarises the most important figures based on official sources." data-de="In der öffentlichen Debatte über das Bürgergeld kursieren viele Behauptungen. Dieser Faktencheck fasst die wichtigsten Kennzahlen auf Basis offizieller Quellen zusammen.">
         In der öffentlichen Debatte über das Bürgergeld kursieren viele Behauptungen.
         Dieser Faktencheck fasst die wichtigsten Kennzahlen auf Basis offizieller
         Quellen zusammen.
@@ -491,7 +491,7 @@
       currentLang = lang;
       langToggle.textContent = lang === 'en' ? 'DE' : 'EN';
       document.querySelectorAll('[data-en]').forEach(el => {
-        el.textContent = lang === 'en' ? el.dataset.en : el.dataset.de;
+        el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.de;
       });
       localStorage.setItem('lang', lang);
     }

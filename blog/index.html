@@ -183,7 +183,7 @@
       currentLang = lang;
       langToggle.textContent = lang === 'en' ? 'DE' : 'EN';
       document.querySelectorAll('[data-en]').forEach(el => {
-        el.textContent = lang === 'en' ? el.dataset.en : el.dataset.de;
+        el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.de;
       });
       localStorage.setItem('lang', lang);
     }
