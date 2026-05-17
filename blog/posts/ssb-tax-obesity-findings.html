@@ -81,6 +81,7 @@
       <li><a href="../../blog/index.html">Blog</a></li>
       <li><a href="../../index.html#contact">Contact</a></li>
       <li><a class="nav-cv-btn" href="../../Leonard_Fredershausen_CV.pdf" download>Download CV</a></li>
+      <li><button class="lang-toggle" id="langToggle" aria-label="Switch language">EN</button></li>
       <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
         <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -304,6 +305,22 @@
       navToggle.classList.remove('open');
       navUl.classList.remove('open');
     }));
+  }
+
+  // Language toggle
+  const langToggle = document.getElementById('langToggle');
+  if (langToggle) {
+    let currentLang = localStorage.getItem('lang') || 'en';
+    function applyLangBlog(lang) {
+      currentLang = lang;
+      langToggle.textContent = lang === 'en' ? 'DE' : 'EN';
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = lang === 'en' ? el.dataset.en : el.dataset.de;
+      });
+      localStorage.setItem('lang', lang);
+    }
+    applyLangBlog(currentLang);
+    langToggle.addEventListener('click', () => applyLangBlog(currentLang === 'en' ? 'de' : 'en'));
   }
 </script>
 </body>
