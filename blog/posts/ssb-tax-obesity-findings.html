@@ -107,6 +107,9 @@
 
     <img src="sugar-tax_shutterstock_396132481-scaled.jpg" alt="Sugar tax policy" class="post-hero-img">
 
+
+    <div class="toc-box" id="toc"></div>
+
     <div class="post-body">
 
       <p data-en="Taxes on sugar-sweetened beverages (SSBs) are one of the most widely discussed tools in public health policy. Over 85 countries have some form of SSB tax in place, and the WHO actively encourages others to follow. The underlying logic is intuitive: make sugary drinks more expensive, people drink less of them, and obesity rates fall. But does the data actually support this?" data-de="Steuern auf zuckerhaltige Getränke (SSBs) gehören zu den meistdiskutierten Instrumenten der Gesundheitspolitik. Über 85 Länder haben irgendeine Form von SSB-Steuer eingeführt, und die WHO ermutigt andere aktiv zur Nachahmung. Die Logik dahinter ist intuitiv: Zuckergetränke teurer machen, weniger davon trinken, Adipositasraten sinken. Aber bestätigen die Daten das wirklich?">
@@ -322,6 +325,48 @@
     applyLangBlog(currentLang);
     langToggle.addEventListener('click', () => applyLangBlog(currentLang === 'en' ? 'de' : 'en'));
   }
+
+  // Table of contents
+  (function() {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
+    const headings = document.querySelectorAll('.post-body h2');
+    if (headings.length < 2) { toc.remove(); return; }
+    headings.forEach((h, i) => { if (!h.id) h.id = 'section-' + i; });
+    const label = document.createElement('span');
+    label.className = 'toc-label';
+    label.setAttribute('data-en', 'In this article');
+    label.setAttribute('data-de', 'In diesem Artikel');
+    label.textContent = 'In this article';
+    toc.appendChild(label);
+    const ol = document.createElement('ol');
+    headings.forEach(h => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      li.appendChild(a);
+      ol.appendChild(li);
+    });
+    toc.appendChild(ol);
+    // Highlight active section
+    const links = ol.querySelectorAll('a');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('toc-active'));
+          const active = ol.querySelector('a[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('toc-active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    headings.forEach(h => obs.observe(h));
+  })();
+
 </script>
 </body>
 </html>

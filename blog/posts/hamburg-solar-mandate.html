@@ -60,6 +60,9 @@
 
     <img src="Solarmodul_AdobeStock_434096515.jpeg" alt="Solar panels on a rooftop" class="post-hero-img">
 
+
+    <div class="toc-box" id="toc"></div>
+
     <div class="post-body">
 
       <p data-en="My bachelor's thesis asks a deceptively simple question: did Hamburg's solar roof mandate actually cause more solar panels to be installed? It sounds straightforward — compare before and after, check if installations went up. But doing this rigorously turns out to be genuinely hard." data-de="Meine Bachelorarbeit stellt eine vermeintlich einfache Frage: Hat Hamburgs Solardachpflicht tatsächlich dazu geführt, dass mehr Solaranlagen installiert wurden? Klingt simpel — vorher und nachher vergleichen, prüfen ob die Zahlen gestiegen sind. Doch das rigoros zu untersuchen ist schwieriger als gedacht.">
@@ -262,6 +265,48 @@
     applyLangBlog(currentLang);
     langToggle.addEventListener('click', () => applyLangBlog(currentLang === 'en' ? 'de' : 'en'));
   }
+
+  // Table of contents
+  (function() {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
+    const headings = document.querySelectorAll('.post-body h2');
+    if (headings.length < 2) { toc.remove(); return; }
+    headings.forEach((h, i) => { if (!h.id) h.id = 'section-' + i; });
+    const label = document.createElement('span');
+    label.className = 'toc-label';
+    label.setAttribute('data-en', 'In this article');
+    label.setAttribute('data-de', 'In diesem Artikel');
+    label.textContent = 'In this article';
+    toc.appendChild(label);
+    const ol = document.createElement('ol');
+    headings.forEach(h => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      li.appendChild(a);
+      ol.appendChild(li);
+    });
+    toc.appendChild(ol);
+    // Highlight active section
+    const links = ol.querySelectorAll('a');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('toc-active'));
+          const active = ol.querySelector('a[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('toc-active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    headings.forEach(h => obs.observe(h));
+  })();
+
 </script>
 </body>
 </html>

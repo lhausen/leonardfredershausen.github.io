@@ -77,6 +77,58 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.10);
 }
 
+/* ── TABLE OF CONTENTS ── */
+.toc-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+}
+
+.toc-box .toc-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.toc-box ol {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0;
+  margin: 0;
+  counter-reset: toc;
+}
+
+.toc-box li { counter-increment: toc; }
+
+.toc-box a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.toc-box a::before {
+  content: counter(toc) ".";
+  color: var(--muted-light);
+  font-size: 0.75rem;
+  min-width: 1.25rem;
+}
+
+.toc-box a:hover { color: var(--accent); }
+.toc-box a.toc-active { color: var(--accent); font-weight: 600; }
+
 /* ── POST BODY ── */
 .post-body {
   font-size: 1.0625rem;
