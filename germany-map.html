@@ -146,7 +146,7 @@
   <div id="mandate-controls" style="display:none">
     <div class="slider-wrap">
       <label for="mandate-slider">Month:</label>
-      <input type="range" id="mandate-slider" min="0" max="95" value="71" step="1" />
+      <input type="range" id="mandate-slider" min="48" max="95" value="71" step="1" />
       <span id="mandate-month-label">2024-12</span>
       <button class="play-btn" id="play-btn">▶ Play</button>
     </div>
@@ -473,8 +473,8 @@ document.getElementById('play-btn').addEventListener('click',()=>{
   playing=true;
   document.getElementById('play-btn').textContent='⏸ Pause';
   document.getElementById('play-btn').classList.add('playing');
-  // Start from beginning if at end
-  if(mandateMonthIdx>=MONTHS.length-1) mandateMonthIdx=0;
+  // Start from first mandate month if at end
+  if(mandateMonthIdx>=MONTHS.length-1) mandateMonthIdx=48;
   playTimer=setInterval(()=>{
     mandateMonthIdx++;
     slider.value=mandateMonthIdx;
