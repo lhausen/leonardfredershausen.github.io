@@ -120,14 +120,14 @@ canvas{max-height:260px}
   <div class="sec-hdr"><h2>③ Controlling for Geographic Size &amp; Building Stock</h2>
     <p>Per km² · per 1,000 buildings (Zensus 2022) · state rankings on all metrics</p></div>
   <div class="insight">
-    💡 <strong>Fairest comparison — controlling for both size and density:</strong> Hamburg has ~345 buildings/km², far above the national average. Dense cities structurally have fewer solar panels per building because apartment rooftops serve many households. The scatter chart below plots all 16 states on building density vs. solar penetration with an OLS trend line — states <em>above</em> the line outperform their density-expected rate; states <em>below</em> underperform. <span id="density-insight-text">Loading…</span>
+    💡 <strong>Fairest comparison — controlling for building density AND population per building:</strong> Hamburg has ~345 buildings/km² <em>and</em> ~7 persons per building (vs ~4 in rural states). Both factors structurally suppress solar-per-building rates in city-states: dense cities have more rooftops per km², but each rooftop serves many more households. The bubble chart below controls for both simultaneously — bubble size = persons per building, OLS controls for both regressors. <span id="density-insight-text">Loading…</span>
   </div>
   <div class="kpi-row">
-    <div class="kpi hh"><div class="kpi-lbl">HH per km²</div><div class="kpi-val" id="k-hh-km2">—</div><div class="kpi-sub">rank #<span id="k-hh-km2-rank">—</span> of 16</div></div>
-    <div class="kpi de"><div class="kpi-lbl">DE avg per km²</div><div class="kpi-val" id="k-de-km2">—</div><div class="kpi-sub">national average</div></div>
-    <div class="kpi hh"><div class="kpi-lbl">HH per 1,000 buildings</div><div class="kpi-val">68.0</div><div class="kpi-sub">rank #15 of 16</div></div>
-    <div class="kpi hh"><div class="kpi-lbl">HH density-expected</div><div class="kpi-val" id="k-hh-expected">—</div><div class="kpi-sub">per 1k bldgs given density</div></div>
-    <div class="kpi" id="k-hh-resid-card"><div class="kpi-lbl">HH vs density-expected</div><div class="kpi-val" id="k-hh-resid">—</div><div class="kpi-sub">outperform (+) or underperform (−)</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH per 1,000 buildings</div><div class="kpi-val">68.0</div><div class="kpi-sub">rank #15 of 16 (raw)</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH persons per building</div><div class="kpi-val" id="k-hh-ppb">—</div><div class="kpi-sub">apartment-density proxy</div></div>
+    <div class="kpi de"><div class="kpi-lbl">DE avg persons per building</div><div class="kpi-val" id="k-de-ppb">—</div><div class="kpi-sub">national average</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH bivariate-expected</div><div class="kpi-val" id="k-hh-expected">—</div><div class="kpi-sub">given bldg density + pop/bldg</div></div>
+    <div class="kpi" id="k-hh-resid-card"><div class="kpi-lbl">HH bivariate-adjusted</div><div class="kpi-val" id="k-hh-resid">—</div><div class="kpi-sub">outperform (+) or underperform (−)</div></div>
   </div>
   <div class="g2">
     <div class="card">
@@ -140,10 +140,10 @@ canvas{max-height:260px}
     </div>
   </div>
   <div class="g-full card">
-    <h3>Building Density vs Solar Penetration — All 16 States</h3>
-    <p class="csub">X: buildings per km² (urban density) · Y: installations per 1,000 buildings · OLS log-log trend line · Hamburg in blue</p>
-    <canvas id="c-density-scatter" style="max-height:340px"></canvas>
-    <p class="mandate" style="margin-top:8px">📍 Above trend line = outperforms density expectation &nbsp;·&nbsp; Below = underperforms &nbsp;·&nbsp; Dashed line = OLS fit across all 16 states</p>
+    <h3>Building Density × Population Density vs Solar Penetration — All 16 States</h3>
+    <p class="csub">X: buildings per km² · Y: installations per 1,000 buildings · <strong>Bubble size: persons per building</strong> · Dashed line: bivariate OLS (controlling for both) · Hamburg in blue</p>
+    <canvas id="c-density-scatter" style="max-height:360px"></canvas>
+    <p class="mandate" style="margin-top:8px">📍 Above OLS line = outperforms given density + population structure &nbsp;·&nbsp; Below = underperforms &nbsp;·&nbsp; Large bubbles = apartment-heavy building stock</p>
   </div>
   <div class="g-full card">
     <h3>Monthly per 1,000 Buildings — Hamburg vs Germany</h3>
@@ -299,78 +299,104 @@ ch('c-bl-bldg',{type:'bar',data:{labels:blBldg.map(r=>r.Bundesland),datasets:[{l
   backgroundColor:blBldg.map(r=>r.Bundesland==='Hamburg'?HH:DE+'99'),borderRadius:3}]},
   options:{...sharedOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
 
-// Density scatter plot + OLS (log-log)
+// Density + population bubble chart + bivariate OLS (log-log)
 (function(){
-  // Enrich BL with building density
-  const blD=BL.map(r=>({...r,bldg_km2:r.buildings/r.area}));
-  // Log-log OLS: ln(per_building) ~ ln(bldg_km2)
-  const lx=blD.map(r=>Math.log(r.bldg_km2));
-  const ly=blD.map(r=>Math.log(r.per_building));
-  const n=lx.length;
-  const sx=lx.reduce((a,b)=>a+b,0),sy=ly.reduce((a,b)=>a+b,0);
-  const sxy=lx.reduce((a,b,i)=>a+b*ly[i],0),sx2=lx.reduce((a,b)=>a+b*b,0);
-  const slope=(n*sxy-sx*sy)/(n*sx2-sx*sx);
-  const intercept=(sy-slope*sx)/n;
-  // expected(x) = exp(intercept) * x^slope
-  function expected(x){return Math.exp(intercept)*Math.pow(x,slope);}
+  // Enrich BL with building density + persons per building
+  const blD=BL.map(r=>({...r,bldg_km2:r.buildings/r.area,ppb:r.pop/r.buildings}));
 
-  // Hamburg density-adjusted insight
+  // Persons-per-building KPIs
   const hhR=blD.find(r=>r.Bundesland==='Hamburg');
-  const hhExp=expected(hhR.bldg_km2);
-  const hhResidPct=((hhR.per_building/hhExp-1)*100);
-  document.getElementById('k-hh-expected').textContent=hhExp.toFixed(1);
+  const dePpb=blD.reduce((a,r)=>a+r.ppb,0)/blD.length;
+  document.getElementById('k-hh-ppb').textContent=hhR.ppb.toFixed(1);
+  document.getElementById('k-de-ppb').textContent=dePpb.toFixed(1);
+
+  // Bivariate log-log OLS: ln(per_building) ~ ln(bldg_km2) + ln(ppb)
+  // Solve normal equations on mean-centred variables
+  const lx1=blD.map(r=>Math.log(r.bldg_km2));
+  const lx2=blD.map(r=>Math.log(r.ppb));
+  const ly =blD.map(r=>Math.log(r.per_building));
+  const n=lx1.length;
+  const m1=lx1.reduce((a,b)=>a+b,0)/n;
+  const m2=lx2.reduce((a,b)=>a+b,0)/n;
+  const my=ly .reduce((a,b)=>a+b,0)/n;
+  const x1c=lx1.map(v=>v-m1),x2c=lx2.map(v=>v-m2),yc=ly.map(v=>v-my);
+  const s11=x1c.reduce((a,b)=>a+b*b,0);
+  const s22=x2c.reduce((a,b)=>a+b*b,0);
+  const s12=x1c.reduce((a,b,i)=>a+b*x2c[i],0);
+  const s1y=x1c.reduce((a,b,i)=>a+b*yc[i],0);
+  const s2y=x2c.reduce((a,b,i)=>a+b*yc[i],0);
+  const det=s11*s22-s12*s12;
+  const b1=(s1y*s22-s2y*s12)/det; // coeff on ln(bldg_km2)
+  const b2=(s2y*s11-s1y*s12)/det; // coeff on ln(ppb)
+  const a0=my-b1*m1-b2*m2;
+  function bivExpected(bldgKm2,ppb){return Math.exp(a0+b1*Math.log(bldgKm2)+b2*Math.log(ppb));}
+
+  // Hamburg bivariate-adjusted KPIs
+  const hhBivExp=bivExpected(hhR.bldg_km2,hhR.ppb);
+  const hhResidPct=(hhR.per_building/hhBivExp-1)*100;
+  document.getElementById('k-hh-expected').textContent=hhBivExp.toFixed(1);
   const residEl=document.getElementById('k-hh-resid');
   const residCard=document.getElementById('k-hh-resid-card');
   residEl.textContent=(hhResidPct>=0?'+':'')+hhResidPct.toFixed(1)+'%';
   residCard.classList.add(hhResidPct>=0?'grn':'red');
 
-  // Density-adjusted rank: rank by residual (actual/expected)
-  const ranked=[...blD].map(r=>({...r,ratio:r.per_building/expected(r.bldg_km2)})).sort((a,b)=>b.ratio-a.ratio);
-  const hhDaRank=ranked.findIndex(r=>r.Bundesland==='Hamburg')+1;
+  // Bivariate-adjusted rank
+  const ranked=[...blD].map(r=>({...r,bivRatio:r.per_building/bivExpected(r.bldg_km2,r.ppb)})).sort((a,b)=>b.bivRatio-a.bivRatio);
+  const hhBivRank=ranked.findIndex(r=>r.Bundesland==='Hamburg')+1;
+
   // Update insight text
   const insightEl=document.getElementById('density-insight-text');
   const compBerlin=blD.find(r=>r.Bundesland==='Berlin');
   if(insightEl){
-    insightEl.innerHTML=`Hamburg's density-expected penetration is <strong>${hhExp.toFixed(0)}/1k buildings</strong> — its actual rate of <strong>68/1k</strong> puts it <strong>${hhResidPct>=0?'above':'below'} trend by ${Math.abs(hhResidPct).toFixed(1)} pp</strong>, ranking <strong>#${hhDaRank} of 16</strong> after density adjustment. Comparable Berlin (${compBerlin.bldg_km2.toFixed(0)} bldgs/km², ${compBerlin.per_building.toFixed(0)}/1k) provides the closest peer benchmark.`;
+    const dir=hhResidPct>=0?'above':'below';
+    insightEl.innerHTML=`After controlling for both, Hamburg's bivariate-expected rate is <strong>${hhBivExp.toFixed(0)}/1k buildings</strong>. Its actual 68/1k places it <strong>${dir} the OLS surface by ${Math.abs(hhResidPct).toFixed(1)}%</strong>, ranking <strong>#${hhBivRank} of 16</strong>. Berlin (${compBerlin.ppb.toFixed(1)} persons/bldg, ${compBerlin.per_building.toFixed(0)}/1k) is the closest structural peer — also had a private mandate from Jan 2023.`;
   }
 
-  // Regression line (50 points across density range)
-  const xMin=Math.min(...blD.map(r=>r.bldg_km2))*0.9;
-  const xMax=Math.max(...blD.map(r=>r.bldg_km2))*1.1;
-  const regPts=Array.from({length:50},(_,i)=>{const x=xMin+i*(xMax-xMin)/49;return{x,y:expected(x)};});
+  // OLS line: fix ppb at national median, vary bldg_km2 (marginal effect of density)
+  const medPpb=blD.slice().sort((a,b)=>a.ppb-b.ppb)[Math.floor(n/2)].ppb;
+  const xVals=blD.map(r=>r.bldg_km2).sort((a,b)=>a-b);
+  const xMin=xVals[0]*0.85,xMax=xVals[xVals.length-1]*1.15;
+  const regPts=Array.from({length:60},(_,i)=>{const x=xMin*Math.pow(xMax/xMin,i/59);return{x,y:bivExpected(x,medPpb)};});
 
-  // Scatter datasets: others vs Hamburg, city-states highlighted
+  // Bubble size scaling: r proportional to ppb, range 5–18px
+  const ppbMin=Math.min(...blD.map(r=>r.ppb)),ppbMax=Math.max(...blD.map(r=>r.ppb));
+  function bSize(ppb){return 5+13*(ppb-ppbMin)/(ppbMax-ppbMin);}
+
   const cityStates=['Hamburg','Berlin','Bremen'];
-  const others=blD.filter(r=>!cityStates.includes(r.Bundesland)).map(r=>({x:r.bldg_km2,y:r.per_building,label:r.Bundesland}));
-  const cities=blD.filter(r=>cityStates.includes(r.Bundesland)&&r.Bundesland!=='Hamburg').map(r=>({x:r.bldg_km2,y:r.per_building,label:r.Bundesland}));
-  const hhPt=[{x:hhR.bldg_km2,y:hhR.per_building,label:'Hamburg'}];
+  const others=blD.filter(r=>!cityStates.includes(r.Bundesland))
+    .map(r=>({x:r.bldg_km2,y:r.per_building,r:bSize(r.ppb),label:r.Bundesland,ppb:r.ppb}));
+  const cities=blD.filter(r=>cityStates.includes(r.Bundesland)&&r.Bundesland!=='Hamburg')
+    .map(r=>({x:r.bldg_km2,y:r.per_building,r:bSize(r.ppb),label:r.Bundesland,ppb:r.ppb}));
+  const hhPt=[{x:hhR.bldg_km2,y:hhR.per_building,r:bSize(hhR.ppb),label:'Hamburg',ppb:hhR.ppb}];
 
   ch('c-density-scatter',{
-    type:'scatter',
+    type:'bubble',
     data:{datasets:[
-      {label:'Other states',data:others,backgroundColor:DE+'88',pointRadius:6,pointHoverRadius:8},
-      {label:'City-states (Berlin, Bremen)',data:cities,backgroundColor:AMB+'CC',pointRadius:7,pointHoverRadius:9},
-      {label:'Hamburg',data:hhPt,backgroundColor:HH,pointRadius:10,pointHoverRadius:12},
-      {type:'line',label:'OLS trend (log-log)',data:regPts,borderColor:RED+'AA',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,tension:0}
+      {label:'Other states',data:others,backgroundColor:DE+'77',borderColor:DE+'BB',borderWidth:1},
+      {label:'City-states (Berlin, Bremen)',data:cities,backgroundColor:AMB+'AA',borderColor:AMB,borderWidth:1.5},
+      {label:'Hamburg',data:hhPt,backgroundColor:HH+'CC',borderColor:HH,borderWidth:2},
+      {type:'line',label:'Bivariate OLS (at median pop/bldg)',data:regPts,borderColor:RED+'BB',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,tension:0}
     ]},
     options:{...sharedOpts,
       plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:14}},
         tooltip:{callbacks:{label:ctx=>{
           const d=ctx.raw;
-          if(d.label)return`${d.label}: ${d.x.toFixed(0)} bldgs/km²,  ${d.y.toFixed(1)}/1k bldgs`;
-          return`OLS: ${ctx.parsed.y.toFixed(1)}/1k bldgs`;
+          if(d.label)return[
+            `${d.label}`,
+            `Building density: ${d.x.toFixed(0)} bldgs/km²`,
+            `Persons per building: ${d.ppb.toFixed(1)}`,
+            `Solar penetration: ${d.y.toFixed(1)}/1k bldgs`
+          ];
+          return`OLS surface (median pop/bldg): ${ctx.parsed.y.toFixed(1)}/1k bldgs`;
         }}}
       },
       scales:{
-        x:{type:'logarithmic',title:{display:true,text:'Building density (buildings per km², log scale)'},grid:{display:true},
-          ticks:{callback:v=>[10,20,50,100,200,400].includes(v)?v:''}},
-        y:{title:{display:true,text:'Solar penetration (per 1,000 buildings)'},beginAtZero:true}
+        x:{type:'logarithmic',title:{display:true,text:'Building density (bldgs/km², log scale)'},
+          ticks:{callback:v=>[10,20,50,100,200,400].includes(Math.round(v))?Math.round(v):''}},
+        y:{title:{display:true,text:'Solar penetration (installs per 1,000 buildings)'},beginAtZero:true}
       }
     }
   });
-
-  // Annotation plugin not available — add after-draw label manually via plugin
-  // (simple approach: nothing extra needed, hover tooltip names each state)
 })();
 
 ch('c-per-bldg',{type:'line',data:{labels:MONTHS,datasets:[
@@ -379,27 +405,34 @@ ch('c-per-bldg',{type:'line',data:{labels:MONTHS,datasets:[
 ]},options:{...sharedOpts,plugins:{legend:{display:false}},
   scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/1k bldgs'}}}}});
 
-// Full state ranking table — sorted by density-adjusted ratio
+// Full state ranking table — bivariate-adjusted
 (function(){
-  const blD=BL.map(r=>({...r,bldg_km2:+(r.buildings/r.area).toFixed(0)}));
-  // Recompute OLS for density-adjusted ratio column
-  const lx=blD.map(r=>Math.log(r.bldg_km2));
-  const ly=blD.map(r=>Math.log(r.per_building));
-  const n=lx.length;
-  const sx=lx.reduce((a,b)=>a+b,0),sy=ly.reduce((a,b)=>a+b,0);
-  const sxy=lx.reduce((a,b,i)=>a+b*ly[i],0),sx2=lx.reduce((a,b)=>a+b*b,0);
-  const slope=(n*sxy-sx*sy)/(n*sx2-sx*sx);
-  const intercept=(sy-slope*sx)/n;
-  function exp_(x){return Math.exp(intercept)*Math.pow(x,slope);}
-  const rows=[...blD].map(r=>({...r,da_ratio:r.per_building/exp_(r.bldg_km2)})).sort((a,b)=>b.per_building-a.per_building);
+  const blD=BL.map(r=>({...r,bldg_km2:r.buildings/r.area,ppb:r.pop/r.buildings}));
+  // Recompute bivariate OLS (same as scatter block)
+  const lx1=blD.map(r=>Math.log(r.bldg_km2)),lx2=blD.map(r=>Math.log(r.ppb)),ly=blD.map(r=>Math.log(r.per_building));
+  const n=lx1.length,m1=lx1.reduce((a,b)=>a+b,0)/n,m2=lx2.reduce((a,b)=>a+b,0)/n,my=ly.reduce((a,b)=>a+b,0)/n;
+  const x1c=lx1.map(v=>v-m1),x2c=lx2.map(v=>v-m2),yc=ly.map(v=>v-my);
+  const s11=x1c.reduce((a,b)=>a+b*b,0),s22=x2c.reduce((a,b)=>a+b*b,0),s12=x1c.reduce((a,b,i)=>a+b*x2c[i],0);
+  const s1y=x1c.reduce((a,b,i)=>a+b*yc[i],0),s2y=x2c.reduce((a,b,i)=>a+b*yc[i],0);
+  const det=s11*s22-s12*s12,b1=(s1y*s22-s2y*s12)/det,b2=(s2y*s11-s1y*s12)/det,a0=my-b1*m1-b2*m2;
+  function bivExp(r){return Math.exp(a0+b1*Math.log(r.bldg_km2)+b2*Math.log(r.ppb));}
+  const rows=[...blD].map(r=>({...r,bivAdj:(r.per_building/bivExp(r)-1)*100})).sort((a,b)=>b.per_building-a.per_building);
   const tbl=document.getElementById('bl-table');
-  let h='<thead><tr><th>#</th><th>State</th><th class="num">Total</th><th class="num">Per km²</th><th class="num">Per 1k bldgs</th><th class="num">Bldgs/km²</th><th class="num">Density-adjusted</th><th class="num">Buildings</th></tr></thead><tbody>';
+  let h='<thead><tr><th>#</th><th>State</th><th class="num">Per 1k bldgs</th><th class="num">Bldgs/km²</th><th class="num">Persons/bldg</th><th class="num">Bivariate-adjusted</th><th class="num">Total</th></tr></thead><tbody>';
   rows.forEach((r,i)=>{
     const cls=r.Bundesland==='Hamburg'?' class="hl"':'';
-    const daSign=r.da_ratio>=1?'+':'';
-    const daPct=daSign+((r.da_ratio-1)*100).toFixed(1)+'%';
-    const daColor=r.da_ratio>=1?'color:#10b981':'color:#ef4444';
-    h+=`<tr><td${cls}>${i+1}</td><td${cls}>${r.Bundesland}${r.Bundesland==='Hamburg'?' ◄':''}</td><td class="num"${cls}>${fmt(r.count)}</td><td class="num"${cls}>${r.per_km2}</td><td class="num"${cls}>${r.per_building}</td><td class="num"${cls}>${r.bldg_km2}</td><td class="num"${cls} style="${daColor}">${daPct}</td><td class="num"${cls}>${fmt(r.buildings)}</td></tr>`;
+    const adjSign=r.bivAdj>=0?'+':'';
+    const adjPct=adjSign+r.bivAdj.toFixed(1)+'%';
+    const adjColor=r.bivAdj>=0?'color:#10b981;font-weight:700':'color:#ef4444;font-weight:700';
+    h+=`<tr>
+      <td${cls}>${i+1}</td>
+      <td${cls}>${r.Bundesland}${r.Bundesland==='Hamburg'?' ◄':''}</td>
+      <td class="num"${cls}>${r.per_building.toFixed(1)}</td>
+      <td class="num"${cls}>${r.bldg_km2.toFixed(0)}</td>
+      <td class="num"${cls}>${r.ppb.toFixed(1)}</td>
+      <td class="num"${cls} style="${adjColor}">${adjPct}</td>
+      <td class="num"${cls}>${fmt(r.count)}</td>
+    </tr>`;
   });
   tbl.innerHTML=h+'</tbody>';
 })();
