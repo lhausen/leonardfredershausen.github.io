@@ -164,7 +164,7 @@
   </div>
   <div id="legend-growth" class="map-legend" style="display:none">
     <span>Lower growth</span>
-    <div class="legend-bar" style="background:linear-gradient(to right,#ef4444,#f8fafc,#16a34a)"></div>
+    <div class="legend-bar" style="background:linear-gradient(to right,#f0fdf4,#4ade80,#14532d)"></div>
     <span>Higher growth</span>
     <span style="margin-left:1rem;color:var(--muted-light)">2019–2022 → 2023–2024</span>
   </div>
@@ -253,16 +253,10 @@ function blueColor(val,max){
 
 function growthColor(pct){
   if(pct===null||pct===undefined) return'#f1f5f9';
-  // Diverging: red (low) → white (median ~320%) → green (high)
-  const MED=320,SPREAD=400;
-  const t=Math.max(-1,Math.min(1,(pct-MED)/SPREAD));
-  if(t>=0){
-    const r=Math.round(248-226*t),g=Math.round(250-86*t),b=Math.round(252-192*t);
-    return`rgb(${r},${g},${b})`;
-  } else {
-    const r=Math.round(248-9*(1+t)),g=Math.round(250-182*(1+t)),b=Math.round(252-184*(1+t));
-    return`rgb(${r},${g},${b})`;
-  }
+  // Sequential: near-white (#f0fdf4) → deep green (#14532d)
+  const t=Math.max(0,Math.min(1,(pct-300)/600));
+  const r=Math.round(240-220*t),g=Math.round(253-170*t),b=Math.round(244-211*t);
+  return`rgb(${r},${g},${b})`;
 }
 
 function mandateColor(score,priv){
