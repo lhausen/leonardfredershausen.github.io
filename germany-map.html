@@ -124,7 +124,7 @@
   <div class="map-tabs">
     <button class="map-tab active" id="tab-install">☀️ Solar Installations</button>
     <button class="map-tab" id="tab-mandate">📋 Mandate Index</button>
-    <a class="map-tab" href="solar-map.html" style="margin-left:auto;text-decoration:none;font-size:.8rem;color:var(--muted)">Hamburg PLZ map →</a>
+    <button class="map-tab" id="tab-hamburg">🗺️ Hamburg PLZ</button>
   </div>
 
   <!-- Install controls -->
@@ -133,6 +133,13 @@
     <button class="map-btn" id="btn-pre">Pre-mandate (2019–2022 avg/yr)</button>
     <button class="map-btn active" id="btn-post">Post-mandate (2023–2024 avg/yr)</button>
     <button class="map-btn" id="btn-growth">Growth rate (%)</button>
+  </div>
+
+  <!-- Hamburg PLZ controls -->
+  <div id="hamburg-controls" class="map-controls" style="display:none">
+    <span>Period:</span>
+    <button class="map-btn" id="hh-btn-pre">Pre-mandate (2019–2022)</button>
+    <button class="map-btn active" id="hh-btn-post">Post-mandate (2023+)</button>
   </div>
 
   <!-- Mandate controls -->
@@ -159,6 +166,12 @@
     <div class="legend-bar" style="background:linear-gradient(to right,#ef4444,#f8fafc,#16a34a)"></div>
     <span>Higher growth</span>
     <span style="margin-left:1rem;color:var(--muted-light)">2019–2022 → 2023–2024</span>
+  </div>
+  <div id="legend-hamburg" class="map-legend" style="display:none">
+    <span>Fewer</span>
+    <div class="legend-bar" style="background:linear-gradient(to right,#dbeafe,#2563eb,#0c2340)"></div>
+    <span>More</span>
+    <span style="margin-left:1rem;color:var(--muted-light)">total installations by PLZ · shared scale pre/post</span>
   </div>
   <div id="legend-mandate" class="map-legend" style="display:none">
     <div class="legend-swatches">
@@ -207,10 +220,13 @@ if(navToggle){
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let mapMode = 'install';   // 'install' | 'mandate'
+let mapMode = 'install';   // 'install' | 'mandate' | 'hamburg'
 let installView = 'post';  // 'pre' | 'post' | 'growth'
 let mandateMonthIdx = 71;  // index into MONTHS (0=2019-01 ... 71=2024-12)
+let hhView = 'post';       // 'pre' | 'post'
 let geojsonLayer = null;
+let hamburgLayer = null;
+let hhSolarData = {};
 let playing = false;
 let playTimer = null;
 
@@ -333,39 +349,85 @@ function onEachFeature(feature,layer){
   });
 }
 
+// ── Hamburg PLZ helpers ───────────────────────────────────────────────────────
+const HH_MAX_POST = {val:null}; // computed after data loads
+function hhGetVal(plz){const d=hhSolarData[String(plz)];if(!d)return 0;return hhView==='pre'?d.pre_mandate:d.post_mandate;}
+function hhStyleFeature(feature){
+  if(!HH_MAX_POST.val) HH_MAX_POST.val=Math.max(...Object.values(hhSolarData).map(d=>d.post_mandate||0))||1;
+  return{fillColor:blueColor(hhGetVal(feature.properties.plz),HH_MAX_POST.val),fillOpacity:.85,color:'#64748b',weight:.8};
+}
+function hhOnEachFeature(feature,layer){
+  layer.on({
+    mouseover(e){
+      e.target.setStyle({weight:2.5,color:'#2563eb',fillOpacity:.95});
+      const plz=String(feature.properties.plz);
+      const d=hhSolarData[plz]||{};
+      document.getElementById('info-panel').innerHTML=`
+        <div class="info-bl">PLZ ${plz} · Hamburg</div>
+        <div class="info-row"><span>Pre-mandate (2019–2022)</span><span class="info-val">${d.pre_mandate||0} installations</span></div>
+        <div class="info-row"><span>Post-mandate (2023+)</span><span class="info-val">${d.post_mandate||0} installations</span></div>`;
+    },
+    mouseout(e){hamburgLayer.resetStyle(e.target);resetInfo();}
+  });
+}
+
+// ── Load all geodata ──────────────────────────────────────────────────────────
 fetch('bundeslaender.geojson').then(r=>r.json()).then(geo=>{
   geojsonLayer=L.geoJSON(geo,{style:styleFeature,onEachFeature}).addTo(map);
 }).catch(err=>console.error('GeoJSON load error:',err));
 
+// Pre-fetch Hamburg data so it's ready when tab is clicked
+Promise.all([
+  fetch('hamburg_plz.json').then(r=>r.json()),
+  fetch('solar_data.json').then(r=>r.json())
+]).then(([geo,data])=>{
+  hhSolarData=data;
+  HH_MAX_POST.val=Math.max(...Object.values(data).map(d=>d.post_mandate||0))||1;
+  // Build layer but don't add to map yet
+  hamburgLayer=L.geoJSON(geo,{style:hhStyleFeature,onEachFeature:hhOnEachFeature});
+}).catch(err=>console.error('Hamburg data load error:',err));
+
 function updateMap(){
-  if(geojsonLayer) geojsonLayer.setStyle(styleFeature);
+  if(mapMode==='hamburg'){if(hamburgLayer) hamburgLayer.setStyle(hhStyleFeature);}
+  else{if(geojsonLayer) geojsonLayer.setStyle(styleFeature);}
 }
+
+// ── Layer helpers ─────────────────────────────────────────────────────────────
+function showGermanyLayers(){
+  if(hamburgLayer) map.removeLayer(hamburgLayer);
+  if(geojsonLayer) geojsonLayer.addTo(map);
+  map.flyTo([51.2,10.4],6,{duration:.9});
+}
+function showHamburgLayer(){
+  if(geojsonLayer) map.removeLayer(geojsonLayer);
+  if(hamburgLayer){hamburgLayer.addTo(map);}
+  map.flyTo([53.55,10.00],11,{duration:.9});
+}
+
+const ALL_TABS=['tab-install','tab-mandate','tab-hamburg'];
+const ALL_LEGENDS=['legend-install','legend-growth','legend-mandate','legend-hamburg'];
+const ALL_CTRLS=['install-controls','mandate-controls','hamburg-controls'];
+function activateTab(id){ALL_TABS.forEach(t=>document.getElementById(t).classList.toggle('active',t===id));}
+function showLegend(id){ALL_LEGENDS.forEach(l=>document.getElementById(l).style.display=l===id?'flex':'none');}
+function showCtrl(id){ALL_CTRLS.forEach(c=>document.getElementById(c).style.display=c===id?c==='mandate-controls'?'block':'flex':'none');}
 
 // ── Tab switching ─────────────────────────────────────────────────────────────
 document.getElementById('tab-install').addEventListener('click',()=>{
-  mapMode='install';
-  document.getElementById('tab-install').classList.add('active');
-  document.getElementById('tab-mandate').classList.remove('active');
-  document.getElementById('install-controls').style.display='flex';
-  document.getElementById('mandate-controls').style.display='none';
-  const g=installView==='growth';
-  document.getElementById('legend-install').style.display=g?'none':'flex';
-  document.getElementById('legend-growth').style.display=g?'flex':'none';
-  document.getElementById('legend-mandate').style.display='none';
-  stopPlay();
-  updateMap();
+  mapMode='install'; activateTab('tab-install'); showCtrl('install-controls');
+  showLegend(installView==='growth'?'legend-growth':'legend-install');
+  stopPlay(); showGermanyLayers(); updateMap();
 });
 
 document.getElementById('tab-mandate').addEventListener('click',()=>{
-  mapMode='mandate';
-  document.getElementById('tab-mandate').classList.add('active');
-  document.getElementById('tab-install').classList.remove('active');
-  document.getElementById('install-controls').style.display='none';
-  document.getElementById('mandate-controls').style.display='block';
-  document.getElementById('legend-install').style.display='none';
-  document.getElementById('legend-growth').style.display='none';
-  document.getElementById('legend-mandate').style.display='flex';
-  updateMap();
+  mapMode='mandate'; activateTab('tab-mandate'); showCtrl('mandate-controls');
+  showLegend('legend-mandate');
+  showGermanyLayers(); updateMap();
+});
+
+document.getElementById('tab-hamburg').addEventListener('click',()=>{
+  mapMode='hamburg'; activateTab('tab-hamburg'); showCtrl('hamburg-controls');
+  showLegend('legend-hamburg');
+  stopPlay(); showHamburgLayer(); updateMap();
 });
 
 // ── Install period buttons ────────────────────────────────────────────────────
@@ -373,9 +435,16 @@ document.getElementById('tab-mandate').addEventListener('click',()=>{
   document.getElementById('btn-'+v).addEventListener('click',()=>{
     installView=v;
     ['pre','post','growth'].forEach(x=>document.getElementById('btn-'+x).classList.toggle('active',x===v));
-    const g=v==='growth';
-    document.getElementById('legend-install').style.display=g?'none':'flex';
-    document.getElementById('legend-growth').style.display=g?'flex':'none';
+    showLegend(v==='growth'?'legend-growth':'legend-install');
+    updateMap();
+  });
+});
+
+// ── Hamburg period buttons ────────────────────────────────────────────────────
+['pre','post'].forEach(v=>{
+  document.getElementById('hh-btn-'+v).addEventListener('click',()=>{
+    hhView=v;
+    ['pre','post'].forEach(x=>document.getElementById('hh-btn-'+x).classList.toggle('active',x===v));
     updateMap();
   });
 });
