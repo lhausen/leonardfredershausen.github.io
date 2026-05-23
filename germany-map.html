@@ -53,7 +53,8 @@
     .sw{width:16px;height:16px;border-radius:3px;flex-shrink:0;border:1px solid rgba(0,0,0,.12)}
 
     /* Info panel */
-    .map-info{margin-top:1rem;padding:.875rem 1.1rem;background:var(--bg-alt,#f8fafc);border:1px solid var(--border);border-radius:10px;font-size:.8125rem;line-height:1.6;color:var(--muted);min-height:52px}
+    .map-info{display:none}
+    #map-tooltip{position:fixed;z-index:9999;pointer-events:none;display:none;background:var(--bg,#fff);border:1px solid var(--border);border-radius:10px;padding:.875rem 1.1rem;font-size:.8125rem;line-height:1.6;color:var(--muted);box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:300px}
     .info-bl{font-weight:700;font-size:.9rem;color:var(--fg);margin-bottom:.2rem}
     .info-row{display:flex;justify-content:space-between;gap:1rem}
     .info-val{font-weight:600;color:var(--fg)}
@@ -182,10 +183,8 @@
     </div>
   </div>
 
-  <!-- Info panel -->
-  <div class="map-info" id="info-panel">
-    <span style="color:var(--muted-light)">Hover over a Bundesland for details</span>
-  </div>
+  <div class="map-info" id="info-panel"></div>
+  <div id="map-tooltip"></div>
 
   <p class="map-note">
     <strong>Sources:</strong> Solar installations: Marktstammdatenregister (MaStR), 2019–2024, filtered to commissioned systems (excl. balcony solar). Mandate index: BSW-Solar Übersicht Solarpflichten Bundesländer (June 2024). Population data: Destatis. Boundaries: Natural Earth. Analysis for bachelor's thesis "How Effective is Hamburg's Solar Roof Mandate?" (Universität Hamburg, 2026).
@@ -294,9 +293,23 @@ function styleFeature(feature){
   return{fillColor:fill,fillOpacity:.82,color:'#475569',weight:.8};
 }
 
+// ── Floating tooltip ─────────────────────────────────────────────────────────
+const _tt=document.getElementById('map-tooltip');
+function _ttMove(e){
+  const oe=e.originalEvent||e;
+  const x=oe.clientX,y=oe.clientY;
+  const vw=window.innerWidth,vh=window.innerHeight;
+  let left=x+18,top=y+18;
+  if(left+_tt.offsetWidth>vw-8) left=x-_tt.offsetWidth-18;
+  if(top+_tt.offsetHeight>vh-8) top=y-_tt.offsetHeight-18;
+  _tt.style.left=left+'px';
+  _tt.style.top=top+'px';
+}
+document.addEventListener('mousemove',_ttMove);
+
 // ── Info panel ────────────────────────────────────────────────────────────────
 function showInfo(bl){
-  const panel=document.getElementById('info-panel');
+  const panel=_tt;
   if(mapMode==='install'){
     const d=INSTALL[bl];
     if(!d){panel.innerHTML=`<div class="info-bl">${bl}</div><span style="color:var(--muted-light)">No data available</span>`;return;}
@@ -329,10 +342,11 @@ function showInfo(bl){
         <span style="color:${best?'#16a34a':'#94a3b8'}">${bestNote}</span>
       </div>`;
   }
+  _tt.style.display='block';
 }
 
 function resetInfo(){
-  document.getElementById('info-panel').innerHTML='<span style="color:var(--muted-light)">Hover over a Bundesland for details</span>';
+  _tt.style.display='none';
 }
 
 // ── GeoJSON layer ─────────────────────────────────────────────────────────────
@@ -342,6 +356,7 @@ function onEachFeature(feature,layer){
       e.target.setStyle({weight:2.5,color:'#2563eb',fillOpacity:.95});
       showInfo(feature.properties.Bundesland);
     },
+    mousemove(e){_ttMove(e);},
     mouseout(e){
       geojsonLayer.resetStyle(e.target);
       resetInfo();
@@ -362,11 +377,13 @@ function hhOnEachFeature(feature,layer){
       e.target.setStyle({weight:2.5,color:'#2563eb',fillOpacity:.95});
       const plz=String(feature.properties.plz);
       const d=hhSolarData[plz]||{};
-      document.getElementById('info-panel').innerHTML=`
+      _tt.innerHTML=`
         <div class="info-bl">PLZ ${plz} · Hamburg</div>
         <div class="info-row"><span>Pre-mandate (2019–2022)</span><span class="info-val">${d.pre_mandate||0} installations</span></div>
         <div class="info-row"><span>Post-mandate (2023+)</span><span class="info-val">${d.post_mandate||0} installations</span></div>`;
+      _tt.style.display='block';
     },
+    mousemove(e){_ttMove(e);},
     mouseout(e){hamburgLayer.resetStyle(e.target);resetInfo();}
   });
 }
