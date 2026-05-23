@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Germany Solar Mandate Map — Leonard Fredershausen</title>
-  <meta name="description" content="Interactive map of solar installations and mandate index across German Bundesländer, 2019–2024." />
+  <meta name="description" content="Interactive map of solar installations and mandate index across German Bundesländer, 2019–2025." />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -187,7 +187,7 @@
   <div id="map-tooltip"></div>
 
   <p class="map-note">
-    <strong>Sources:</strong> Solar installations: Marktstammdatenregister (MaStR), 2019–2024, filtered to commissioned systems (excl. balcony solar). Mandate index: BSW-Solar Übersicht Solarpflichten Bundesländer (June 2024). Population data: Destatis. Boundaries: Natural Earth. Analysis for bachelor's thesis "How Effective is Hamburg's Solar Roof Mandate?" (Universität Hamburg, 2026).
+    <strong>Sources:</strong> Solar installations: Marktstammdatenregister (MaStR), 2019–2025, filtered to commissioned systems (excl. balcony solar). Mandate index: BSW-Solar Übersicht Solarpflichten Bundesländer (June 2024). Population data: Destatis. Boundaries: Natural Earth. Analysis for bachelor's thesis "How Effective is Hamburg's Solar Roof Mandate?" (Universität Hamburg, 2026).
   </p>
 </div>
 
@@ -254,7 +254,7 @@ function blueColor(val,max){
 function growthColor(pct){
   if(pct===null||pct===undefined) return'#f1f5f9';
   // Sequential: near-white (#f0fdf4) → deep green (#14532d)
-  const t=Math.max(0,Math.min(1,(pct-150)/400));
+  const t=Math.sqrt(Math.max(0,Math.min(1,(pct-150)/400)));
   const r=Math.round(240-220*t),g=Math.round(253-170*t),b=Math.round(244-211*t);
   return`rgb(${r},${g},${b})`;
 }
