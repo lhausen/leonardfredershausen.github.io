@@ -5,61 +5,47 @@
 <title>Hamburg Solar — Comparative Analysis Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#f0f4f8;--card:#fff;--hdr:#0f172a;--acc:#2563eb;--hh:#2563eb;--de:#94a3b8;--amb:#f59e0b;--grn:#10b981;--pur:#6366f1;--red:#ef4444;--txt:#1e293b;--mut:#64748b;--brd:#e2e8f0;--gap:14px;--r:10px}
+:root{--bg:#f0f4f8;--card:#fff;--hdr:#0f172a;--hh:#2563eb;--de:#94a3b8;--amb:#f59e0b;--grn:#10b981;--pur:#6366f1;--red:#ef4444;--txt:#1e293b;--mut:#64748b;--brd:#e2e8f0;--gap:14px;--r:10px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);font-size:13px;line-height:1.5}
 .wrap{max-width:1440px;margin:0 auto;padding:var(--gap)}
-/* Header */
 header{background:var(--hdr);color:#f8fafc;padding:16px 24px;border-radius:var(--r);margin-bottom:var(--gap);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(37,99,235,.25) 0%,transparent 70%)}
 header h1{font-size:16px;font-weight:700;letter-spacing:-.02em}
 header p{font-size:11px;color:#94a3b8;margin-top:1px}
-.back{font-size:11px;color:#94a3b8;text-decoration:none;display:block;margin-bottom:3px}
-.back:hover{color:#f8fafc}
-/* Section nav */
+.back{font-size:11px;color:#94a3b8;text-decoration:none;display:block;margin-bottom:3px}.back:hover{color:#f8fafc}
 .section-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--gap)}
 .snav-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--brd);background:var(--card);color:var(--mut);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
-.snav-btn.active,.snav-btn:hover{background:var(--acc);border-color:var(--acc);color:#fff}
-/* Sections */
+.snav-btn.active,.snav-btn:hover{background:var(--hh);border-color:var(--hh);color:#fff}
 .section{display:none}.section.active{display:block}
-/* Section header */
-.sec-hdr{background:var(--card);border-radius:var(--r);padding:14px 18px;margin-bottom:var(--gap);border-left:4px solid var(--acc);box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.sec-hdr h2{font-size:14px;font-weight:700;color:var(--txt)}
-.sec-hdr p{font-size:12px;color:var(--mut);margin-top:2px}
-/* KPIs */
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--gap);margin-bottom:var(--gap)}
+.sec-hdr{background:var(--card);border-radius:var(--r);padding:14px 18px;margin-bottom:var(--gap);border-left:4px solid var(--hh);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.sec-hdr h2{font-size:14px;font-weight:700}.sec-hdr p{font-size:12px;color:var(--mut);margin-top:2px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:var(--gap);margin-bottom:var(--gap)}
 .kpi{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-top:3px solid transparent}
-.kpi.hh{border-color:var(--hh)}.kpi.de{border-color:var(--de)}.kpi.grn{border-color:var(--grn)}.kpi.amb{border-color:var(--amb)}.kpi.pur{border-color:var(--pur)}
+.kpi.hh{border-color:var(--hh)}.kpi.de{border-color:var(--de)}.kpi.grn{border-color:var(--grn)}.kpi.amb{border-color:var(--amb)}.kpi.pur{border-color:var(--pur)}.kpi.red{border-color:var(--red)}
 .kpi-lbl{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:3px}
-.kpi-val{font-size:22px;font-weight:800;letter-spacing:-.03em;color:var(--txt)}
+.kpi-val{font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--txt)}
 .kpi-sub{font-size:11px;color:var(--mut);margin-top:2px}
-/* Grid layouts */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
 .g12{display:grid;grid-template-columns:2fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
-.g21{display:grid;grid-template-columns:1fr 2fr;gap:var(--gap);margin-bottom:var(--gap)}
 .g-full{margin-bottom:var(--gap)}
-/* Cards */
 .card{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.card h3{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:2px}
-.card .csub{font-size:10px;color:var(--mut);margin-bottom:12px}
+.card h3{font-size:12px;font-weight:700;margin-bottom:2px}.card .csub{font-size:10px;color:var(--mut);margin-bottom:12px}
 canvas{max-height:260px}
-/* Legend */
 .legend{display:flex;gap:12px;font-size:11px;margin-bottom:8px;flex-wrap:wrap}
 .legend span{display:flex;align-items:center;gap:5px;font-weight:600}
 .dot{width:10px;height:10px;border-radius:2px;display:inline-block}
-/* Mandate marker */
-.mandate{font-size:10px;color:var(--acc);font-weight:600;margin-top:6px;text-align:center}
-/* Diff badge */
-.badge{display:inline-block;padding:1px 5px;border-radius:4px;font-size:10px;font-weight:700}
-.badge.pos{background:#d1fae5;color:#065f46}.badge.neg{background:#fee2e2;color:#991b1b}.badge.neu{background:#f1f5f9;color:#475569}
-/* Comparison table */
+.mandate{font-size:10px;color:var(--hh);font-weight:600;margin-top:6px;text-align:center}
+.insight{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;font-size:12px;color:#1e40af;margin-bottom:var(--gap)}
+.insight strong{font-weight:700}
 .cmp-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
-.cmp-table th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--brd);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
-.cmp-table td{padding:8px 10px;border-bottom:1px solid var(--brd)}
+.cmp-table th{text-align:left;padding:7px 10px;border-bottom:2px solid var(--brd);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+.cmp-table td{padding:7px 10px;border-bottom:1px solid var(--brd)}
 .cmp-table tr:hover td{background:#f8fafc}
 .cmp-table .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-.cmp-table .highlight{background:#eff6ff!important}
-@media(max-width:900px){.g2,.g3,.g12,.g21{grid-template-columns:1fr}}
+.cmp-table .hl{background:#eff6ff!important;font-weight:700}
+.rank-badge{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--hh);color:#fff;font-size:10px;font-weight:700;text-align:center;line-height:22px}
+@media(max-width:900px){.g2,.g3,.g12{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -67,58 +53,48 @@ canvas{max-height:260px}
 <header>
   <div>
     <a class="back" href="index.html">← Back to site</a>
-    <h1>🌞 Hamburg Solar: Comparative Analysis — MaStR Data</h1>
-    <p>Marktstammdatenregister · Excl. Balkonkraftwerke · Commissioned systems only · Bachelor's Thesis Data</p>
+    <h1>🌞 Hamburg Solar PV — Comparative Analysis · MaStR + Zensus 2022</h1>
+    <p>Marktstammdatenregister · Excl. Balkonkraftwerke · Building stock: Zensus 2022 · Bachelor's Thesis Data</p>
   </div>
 </header>
 
 <nav class="section-nav">
   <button class="snav-btn active" onclick="showSec(0)">① Absolute Trends</button>
-  <button class="snav-btn" onclick="showSec(1)">② Relative Comparison</button>
-  <button class="snav-btn" onclick="showSec(2)">③ Per km² &amp; State Ranking</button>
-  <button class="snav-btn" onclick="showSec(3)">④ Growth Index 2019=100</button>
+  <button class="snav-btn" onclick="showSec(1)">② Per Capita</button>
+  <button class="snav-btn" onclick="showSec(2)">③ Per km² &amp; Buildings</button>
+  <button class="snav-btn" onclick="showSec(3)">④ Growth Index</button>
   <button class="snav-btn" onclick="showSec(4)">⑤ System Types</button>
-  <button class="snav-btn" onclick="showSec(5)">⑥ Post-2023 Deep Dive</button>
+  <button class="snav-btn" onclick="showSec(5)">⑥ Post-2023 Dive</button>
 </nav>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- SECTION 1: ABSOLUTE TRENDS -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ① ABSOLUTE -->
 <div class="section active" id="sec0">
   <div class="sec-hdr"><h2>① Absolute Numbers &amp; Trends: Hamburg vs. National</h2>
-    <p>Raw count of new solar installations per month and year · Hamburg private mandate started Jan 2023</p></div>
+    <p>Raw count of new solar PV systems commissioned per month and year</p></div>
   <div class="kpi-row">
     <div class="kpi hh"><div class="kpi-lbl">Hamburg · All time</div><div class="kpi-val">17,729</div><div class="kpi-sub">commissioned systems</div></div>
     <div class="kpi de"><div class="kpi-lbl">Germany · All time</div><div class="kpi-val">4.51M</div><div class="kpi-sub">commissioned systems</div></div>
-    <div class="kpi hh"><div class="kpi-lbl">Hamburg · 2023+</div><div class="kpi-val">11,606</div><div class="kpi-sub">post-mandate</div></div>
-    <div class="kpi de"><div class="kpi-lbl">Germany · 2023+</div><div class="kpi-val">1.93M</div><div class="kpi-sub">post-mandate</div></div>
-    <div class="kpi amb"><div class="kpi-lbl">HH share of national</div><div class="kpi-val">0.39%</div><div class="kpi-sub">Hamburg: 2.2% of DE population</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">Hamburg · 2023+</div><div class="kpi-val">11,606</div><div class="kpi-sub">post-mandate (+89% vs pre)</div></div>
+    <div class="kpi de"><div class="kpi-lbl">Germany · 2023+</div><div class="kpi-val">1.93M</div><div class="kpi-sub">post-EEG reform (−25% vs pre)</div></div>
+    <div class="kpi amb"><div class="kpi-lbl">HH share of national</div><div class="kpi-val">0.39%</div><div class="kpi-sub">HH = 2.2% of DE population</div></div>
   </div>
   <div class="g-full card">
-    <h3>Monthly New Installations — Absolute Count</h3>
-    <p class="csub">Hamburg (left axis) vs Germany (right axis) · Jan 2023 = Hamburg private mandate</p>
-    <div class="legend"><span><span class="dot" style="background:#2563eb"></span>Hamburg (left)</span><span><span class="dot" style="background:#94a3b8"></span>Germany (right)</span></div>
+    <h3>Monthly New Installations — Absolute Count (dual axis)</h3>
+    <p class="csub">Hamburg (left axis, solid) vs Germany (right axis, dashed) · 2019–2025</p>
+    <div class="legend"><span><span class="dot" style="background:var(--hh)"></span>Hamburg (left)</span><span><span class="dot" style="background:var(--de)"></span>Germany (right)</span></div>
     <canvas id="c-abs-monthly"></canvas>
-    <p class="mandate">▲ Jan 2023: Hamburg mandate (private buildings) &nbsp;&nbsp; ▲ Jan 2024: Extended to roof renovations</p>
+    <p class="mandate">▲ Jan 2023: Hamburg private mandate &nbsp; ▲ Jan 2024: Roof renovation mandate</p>
   </div>
   <div class="g2">
-    <div class="card">
-      <h3>Annual Installations — Hamburg</h3><p class="csub">New systems per year</p>
-      <canvas id="c-ann-hh"></canvas>
-    </div>
-    <div class="card">
-      <h3>Annual Installations — Germany</h3><p class="csub">New systems per year (thousands)</p>
-      <canvas id="c-ann-de"></canvas>
-    </div>
+    <div class="card"><h3>Annual — Hamburg</h3><p class="csub">New systems per year</p><canvas id="c-ann-hh"></canvas></div>
+    <div class="card"><h3>Annual — Germany</h3><p class="csub">New systems per year</p><canvas id="c-ann-de"></canvas></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- SECTION 2: RELATIVE COMPARISON -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ② PER CAPITA -->
 <div class="section" id="sec1">
-  <div class="sec-hdr"><h2>② Relative Comparison: Hamburg vs. National Average</h2>
-    <p>Installations per 100,000 residents · removes population size effect · relative difference (Hamburg − Germany)</p></div>
+  <div class="sec-hdr"><h2>② Relative Comparison: Per 100,000 Residents</h2>
+    <p>Population-adjusted rate · removes the effect of Hamburg's small size · relative gap over time</p></div>
   <div class="kpi-row">
     <div class="kpi hh"><div class="kpi-lbl">HH per 100k · 2022</div><div class="kpi-val" id="k-hh-22">—</div><div class="kpi-sub">annual rate</div></div>
     <div class="kpi de"><div class="kpi-lbl">DE per 100k · 2022</div><div class="kpi-val" id="k-de-22">—</div><div class="kpi-sub">annual rate</div></div>
@@ -127,56 +103,60 @@ canvas{max-height:260px}
   </div>
   <div class="g-full card">
     <h3>Installations per 100,000 Residents — Monthly</h3>
-    <p class="csub">Population-adjusted comparison · Hamburg vs national average</p>
-    <div class="legend"><span><span class="dot" style="background:#2563eb"></span>Hamburg</span><span><span class="dot" style="background:#94a3b8;border:1px dashed #64748b"></span>Germany avg</span></div>
+    <p class="csub">Hamburg vs national average · population-normalised</p>
+    <div class="legend"><span><span class="dot" style="background:var(--hh)"></span>Hamburg</span><span><span class="dot" style="background:var(--de)"></span>Germany avg</span></div>
     <canvas id="c-per100k"></canvas>
   </div>
   <div class="g-full card">
-    <h3>Relative Difference: Hamburg vs. Germany (per 100k residents)</h3>
-    <p class="csub">Positive = Hamburg above national rate · Negative = Hamburg below · % difference</p>
+    <h3>Relative Gap: Hamburg − Germany (per 100k residents, % difference)</h3>
+    <p class="csub">Positive = Hamburg above national rate · Negative = below</p>
     <canvas id="c-reldiff"></canvas>
     <p class="mandate">▲ Jan 2023 · ▲ Jan 2024</p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- SECTION 3: PER KM² & STATE RANKING -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ③ PER KM² & BUILDINGS -->
 <div class="section" id="sec2">
-  <div class="sec-hdr"><h2>③ Controlling for Geographic Size: Installations per km²</h2>
-    <p>Hamburg is dense (755 km²) · per km² normalises for land area · state ranking shows where Hamburg stands</p></div>
-  <div class="kpi-row">
-    <div class="kpi hh"><div class="kpi-lbl">Hamburg per km²</div><div class="kpi-val" id="k-hh-km2">—</div><div class="kpi-sub">all-time</div></div>
-    <div class="kpi de"><div class="kpi-lbl">Germany avg per km²</div><div class="kpi-val" id="k-de-km2">—</div><div class="kpi-sub">all-time</div></div>
-    <div class="kpi grn"><div class="kpi-lbl">HH rank (per km²)</div><div class="kpi-val" id="k-hh-rank">—</div><div class="kpi-sub">among 16 states</div></div>
-    <div class="kpi amb"><div class="kpi-lbl">HH density factor</div><div class="kpi-val" id="k-hh-factor">—</div><div class="kpi-sub">× national avg</div></div>
+  <div class="sec-hdr"><h2>③ Controlling for Geographic Size &amp; Building Stock</h2>
+    <p>Per km² · per 1,000 buildings (Zensus 2022) · state rankings on all metrics</p></div>
+  <div class="insight">
+    💡 <strong>Key finding:</strong> When controlling for <strong>building stock</strong>, Hamburg ranks <strong>15th of 16 states</strong> (68 systems per 1,000 buildings vs. national avg 225). Hamburg's dense apartment stock — where rooftop solar is structurally harder — explains the gap, and is a critical confound the mandate must overcome.
   </div>
-  <div class="g12">
+  <div class="kpi-row">
+    <div class="kpi hh"><div class="kpi-lbl">HH per km²</div><div class="kpi-val" id="k-hh-km2">—</div><div class="kpi-sub">rank #<span id="k-hh-km2-rank">—</span> of 16</div></div>
+    <div class="kpi de"><div class="kpi-lbl">DE avg per km²</div><div class="kpi-val" id="k-de-km2">—</div><div class="kpi-sub">national average</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH per 1,000 buildings</div><div class="kpi-val">68.0</div><div class="kpi-sub">rank #15 of 16</div></div>
+    <div class="kpi de"><div class="kpi-lbl">DE per 1,000 buildings</div><div class="kpi-val">225.5</div><div class="kpi-sub">national average</div></div>
+    <div class="kpi red"><div class="kpi-lbl">HH penetration gap</div><div class="kpi-val">−70%</div><div class="kpi-sub">vs national building rate</div></div>
+  </div>
+  <div class="g2">
     <div class="card">
-      <h3>All Bundesländer — Installations per km² (total)</h3>
-      <p class="csub">Hamburg highlighted · sorted descending</p>
+      <h3>Bundesländer — Installations per km²</h3><p class="csub">Hamburg highlighted · sorted desc</p>
       <canvas id="c-bl-km2"></canvas>
     </div>
     <div class="card">
-      <h3>Monthly per km² — Hamburg vs Germany</h3>
-      <p class="csub">Geographic density of installations</p>
-      <div class="legend"><span><span class="dot" style="background:#2563eb"></span>Hamburg</span><span><span class="dot" style="background:#94a3b8"></span>Germany avg</span></div>
-      <canvas id="c-perkm2"></canvas>
+      <h3>Bundesländer — Installations per 1,000 Buildings</h3><p class="csub">Zensus 2022 building stock · sorted desc</p>
+      <canvas id="c-bl-bldg"></canvas>
     </div>
   </div>
+  <div class="g-full card">
+    <h3>Monthly per 1,000 Buildings — Hamburg vs Germany</h3>
+    <p class="csub">Building-stock-adjusted rate · shows how quickly each building cohort is being solarised</p>
+    <div class="legend"><span><span class="dot" style="background:var(--hh)"></span>Hamburg</span><span><span class="dot" style="background:var(--de)"></span>Germany avg</span></div>
+    <canvas id="c-per-bldg"></canvas>
+    <p class="mandate">▲ Jan 2023 · ▲ Jan 2024</p>
+  </div>
   <div class="card">
-    <h3>State Ranking — All Metrics</h3>
-    <p class="csub">Total systems · per 100k residents · per km² · sorted by per km²</p>
+    <h3>Full State Ranking — All Normalisation Metrics</h3>
+    <p class="csub">Sorted by per 1,000 buildings · Hamburg highlighted</p>
     <table class="cmp-table" id="bl-table"></table>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- SECTION 4: GROWTH INDEX -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ④ GROWTH INDEX -->
 <div class="section" id="sec3">
   <div class="sec-hdr"><h2>④ Growth Rate: Index 2019 = 100</h2>
-    <p>Baseline 2019 = 100 for both · shows divergence after mandate · controls for different starting levels</p></div>
+    <p>Controls for different starting levels · shows divergence after mandate · YoY rates</p></div>
   <div class="kpi-row">
     <div class="kpi hh"><div class="kpi-lbl">HH index · 2023</div><div class="kpi-val" id="k-idx-hh23">—</div><div class="kpi-sub">vs 100 in 2019</div></div>
     <div class="kpi de"><div class="kpi-lbl">DE index · 2023</div><div class="kpi-val" id="k-idx-de23">—</div><div class="kpi-sub">vs 100 in 2019</div></div>
@@ -184,32 +164,22 @@ canvas{max-height:260px}
     <div class="kpi de"><div class="kpi-lbl">DE index · 2024</div><div class="kpi-val" id="k-idx-de24">—</div><div class="kpi-sub">vs 100 in 2019</div></div>
   </div>
   <div class="g-full card">
-    <h3>Growth Index (2019 = 100) — Annual Installations</h3>
-    <p class="csub">Both series start at 100 in 2019 · divergence indicates relative outperformance</p>
-    <div class="legend"><span><span class="dot" style="background:#2563eb"></span>Hamburg</span><span><span class="dot" style="background:#94a3b8"></span>Germany</span></div>
+    <h3>Growth Index (2019 = 100)</h3>
+    <p class="csub">Both start at 100 · divergence = relative over/underperformance · annual data</p>
+    <div class="legend"><span><span class="dot" style="background:var(--hh)"></span>Hamburg</span><span><span class="dot" style="background:var(--de)"></span>Germany</span></div>
     <canvas id="c-index"></canvas>
     <p class="mandate">▲ 2023: Hamburg mandate starts</p>
   </div>
   <div class="g2">
-    <div class="card">
-      <h3>Year-on-Year Growth Rate (%)</h3>
-      <p class="csub">Annual % change in new installations</p>
-      <canvas id="c-yoy"></canvas>
-    </div>
-    <div class="card">
-      <h3>Cumulative Installations (Indexed)</h3>
-      <p class="csub">Running total of systems · 2019=100</p>
-      <canvas id="c-cumul"></canvas>
-    </div>
+    <div class="card"><h3>Year-on-Year Growth Rate (%)</h3><p class="csub">Annual % change in new installations</p><canvas id="c-yoy"></canvas></div>
+    <div class="card"><h3>Cumulative Installations Index (2019=100)</h3><p class="csub">Running total · same baseline</p><canvas id="c-cumul"></canvas></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- SECTION 5: SYSTEM TYPES -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ⑤ SYSTEM TYPES -->
 <div class="section" id="sec4">
   <div class="sec-hdr"><h2>⑤ System Types: What is Being Built?</h2>
-    <p>Size distribution · private vs commercial share · Hamburg vs national · annual trends</p></div>
+    <p>Size distribution · private vs commercial share · Hamburg vs national · trend over time</p></div>
   <div class="kpi-row">
     <div class="kpi hh"><div class="kpi-lbl">HH avg size (kW)</div><div class="kpi-val">12.0</div><div class="kpi-sub">all-time mean</div></div>
     <div class="kpi de"><div class="kpi-lbl">DE avg size (kW)</div><div class="kpi-val">23.1</div><div class="kpi-sub">all-time mean</div></div>
@@ -217,120 +187,82 @@ canvas{max-height:260px}
     <div class="kpi de"><div class="kpi-lbl">DE private share</div><div class="kpi-val">90.8%</div><div class="kpi-sub">Natürliche Personen</div></div>
   </div>
   <div class="g2">
-    <div class="card">
-      <h3>Private Share Over Time — Hamburg vs Germany</h3>
-      <p class="csub">% of new systems installed by private individuals (Natürliche Personen)</p>
-      <canvas id="c-priv"></canvas>
-    </div>
-    <div class="card">
-      <h3>Size Distribution — Hamburg vs Germany (all-time)</h3>
-      <p class="csub">% of systems by size category</p>
-      <canvas id="c-size-cmp"></canvas>
-    </div>
+    <div class="card"><h3>Private Share Over Time</h3><p class="csub">% installed by Natürliche Personen · Hamburg vs Germany</p><canvas id="c-priv"></canvas></div>
+    <div class="card"><h3>Size Distribution — Hamburg vs Germany (all-time avg)</h3><p class="csub">% of systems by size category</p><canvas id="c-size-cmp"></canvas></div>
   </div>
   <div class="g2">
-    <div class="card">
-      <h3>Hamburg — Size Mix Over Time (%)</h3>
-      <p class="csub">Share of each size category per year</p>
-      <canvas id="c-size-hh"></canvas>
-    </div>
-    <div class="card">
-      <h3>Germany — Size Mix Over Time (%)</h3>
-      <p class="csub">Share of each size category per year</p>
-      <canvas id="c-size-de"></canvas>
-    </div>
+    <div class="card"><h3>Hamburg — Size Mix Over Time (%)</h3><p class="csub">Stacked share by year</p><canvas id="c-size-hh"></canvas></div>
+    <div class="card"><h3>Germany — Size Mix Over Time (%)</h3><p class="csub">Stacked share by year</p><canvas id="c-size-de"></canvas></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- SECTION 6: POST-2023 DEEP DIVE -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ⑥ POST-2023 -->
 <div class="section" id="sec5">
-  <div class="sec-hdr"><h2>⑥ Post-2023 Deep Dive: How Did the Mandate Change Things?</h2>
-    <p>All previous metrics split at Jan 2023 (mandate start) · pre vs post comparison for Hamburg and Germany</p></div>
+  <div class="sec-hdr"><h2>⑥ Post-2023 Deep Dive: Before vs After the Mandate</h2>
+    <p>All metrics split at Jan 2023 · mandate effect on volume, private share, system size, building penetration</p></div>
+  <div class="insight">
+    💡 <strong>Hamburg mandate effect:</strong> Post-2023, Hamburg added <strong>11,606 systems</strong> (vs 6,123 pre-2023 in the same timeframe). Private share rose <strong>+7.6 pp</strong> (82.6%→90.2%). Building penetration rate roughly <strong>tripled</strong> — but remains far below the national average.
+  </div>
   <div class="kpi-row">
-    <div class="kpi hh"><div class="kpi-lbl">HH pre-2023 systems</div><div class="kpi-val">6,123</div><div class="kpi-sub">avg 875/year (2019–22)</div></div>
-    <div class="kpi hh"><div class="kpi-lbl">HH post-2023 systems</div><div class="kpi-val">11,606</div><div class="kpi-sub">across 2023–24</div></div>
-    <div class="kpi grn"><div class="kpi-lbl">HH private share change</div><div class="kpi-val">+7.6 pp</div><div class="kpi-sub">82.6% → 90.2%</div></div>
-    <div class="kpi de"><div class="kpi-lbl">DE private share change</div><div class="kpi-val">+5.4 pp</div><div class="kpi-sub">88.4% → 93.8%</div></div>
-    <div class="kpi amb"><div class="kpi-lbl">HH avg size change</div><div class="kpi-val">+0.8 kW</div><div class="kpi-sub">11.6 → 12.4 kW</div></div>
-    <div class="kpi de"><div class="kpi-lbl">DE avg size change</div><div class="kpi-val">−1.6 kW</div><div class="kpi-sub">23.7 → 22.1 kW</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH pre-2023 systems</div><div class="kpi-val">6,123</div><div class="kpi-sub">2019–2022</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH post-2023 systems</div><div class="kpi-val">11,606</div><div class="kpi-sub">2023–2024</div></div>
+    <div class="kpi grn"><div class="kpi-lbl">HH private share Δ</div><div class="kpi-val">+7.6 pp</div><div class="kpi-sub">82.6% → 90.2%</div></div>
+    <div class="kpi de"><div class="kpi-lbl">DE private share Δ</div><div class="kpi-val">+5.4 pp</div><div class="kpi-sub">88.4% → 93.8%</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH per 1k bldgs · pre</div><div class="kpi-val" id="k-bldg-pre">—</div><div class="kpi-sub">annual rate 2019–22</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH per 1k bldgs · post</div><div class="kpi-val" id="k-bldg-post">—</div><div class="kpi-sub">annual rate 2023–24</div></div>
   </div>
   <div class="g-full card">
-    <h3>Monthly Installations per 100k Residents — Post-2023 Zoom</h3>
+    <h3>Monthly per 100k Residents — Post-2023 Zoom</h3>
     <p class="csub">Jan 2023 onwards · Hamburg vs Germany · population-adjusted</p>
-    <div class="legend"><span><span class="dot" style="background:#2563eb"></span>Hamburg</span><span><span class="dot" style="background:#94a3b8"></span>Germany avg</span></div>
+    <div class="legend"><span><span class="dot" style="background:var(--hh)"></span>Hamburg</span><span><span class="dot" style="background:var(--de)"></span>Germany avg</span></div>
     <canvas id="c-post23-monthly"></canvas>
-    <p class="mandate">▲ Jan 2023: Private mandate starts &nbsp;&nbsp; ▲ Jan 2024: Roof renovation mandate</p>
+    <p class="mandate">▲ Jan 2023: Private mandate &nbsp; ▲ Jan 2024: Roof renovation mandate</p>
+  </div>
+  <div class="g-full card">
+    <h3>Monthly per 1,000 Buildings — Post-2023 Zoom</h3>
+    <p class="csub">Building-stock adjusted · Hamburg vs Germany · 2023 onwards</p>
+    <div class="legend"><span><span class="dot" style="background:var(--hh)"></span>Hamburg</span><span><span class="dot" style="background:var(--de)"></span>Germany avg</span></div>
+    <canvas id="c-post23-bldg"></canvas>
+    <p class="mandate">▲ Jan 2023 · ▲ Jan 2024</p>
   </div>
   <div class="g2">
-    <div class="card">
-      <h3>Pre vs Post 2023 — Private Share</h3>
-      <p class="csub">Hamburg private mandate effect</p>
-      <canvas id="c-post23-priv"></canvas>
-    </div>
-    <div class="card">
-      <h3>Pre vs Post 2023 — Size Distribution</h3>
-      <p class="csub">Hamburg vs Germany size mix shift</p>
-      <canvas id="c-post23-size"></canvas>
-    </div>
+    <div class="card"><h3>Pre vs Post 2023 — Private Share</h3><p class="csub">Hamburg vs Germany</p><canvas id="c-post23-priv"></canvas></div>
+    <div class="card"><h3>Pre vs Post 2023 — Size Distribution</h3><p class="csub">Hamburg: pre vs post vs Germany post</p><canvas id="c-post23-size"></canvas></div>
   </div>
 </div>
 
-</div><!-- /wrap -->
-
+</div>
 <script>
-const MONTHS=["2019-01", "2019-02", "2019-03", "2019-04", "2019-05", "2019-06", "2019-07", "2019-08", "2019-09", "2019-10", "2019-11", "2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05", "2020-06", "2020-07", "2020-08", "2020-09", "2020-10", "2020-11", "2020-12", "2021-01", "2021-02", "2021-03", "2021-04", "2021-05", "2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12", "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12"];const NAT_ABS=[9921, 6422, 8158, 9139, 9637, 9112, 11110, 9786, 10655, 11432, 9801, 6076, 14419, 10079, 14458, 15490, 15782, 16588, 18494, 15606, 17821, 17759, 16861, 11824, 14682, 12168, 19567, 18844, 18956, 21575, 21351, 19015, 22414, 22027, 21263, 14622, 19780, 19606, 28709, 25071, 29709, 28082, 26604, 39231, 36511, 31665, 29320, 16582, 63676, 54224, 68742, 59971, 73983, 82360, 79071, 77512, 74404, 69178, 67381, 45201, 63471, 49025, 56813, 60933, 56343, 58900, 67079, 48987, 49761, 50389, 48738, 44957, 48762, 37398, 34236, 38332, 40617, 38949, 47062, 33931, 38171, 36132, 34774, 30075];const HH_ABS=[25, 13, 30, 25, 33, 29, 30, 39, 35, 34, 44, 19, 34, 38, 42, 49, 54, 59, 50, 52, 51, 86, 60, 58, 47, 46, 78, 72, 70, 77, 79, 71, 89, 87, 97, 54, 83, 82, 107, 92, 94, 109, 75, 163, 143, 109, 125, 92, 231, 203, 254, 256, 301, 387, 475, 468, 414, 316, 316, 201, 325, 294, 352, 337, 325, 321, 379, 293, 323, 322, 326, 299, 311, 270, 291, 308, 331, 313, 446, 273, 370, 352, 299, 324];const NAT_100K=[11.811, 7.645, 9.712, 10.88, 11.473, 10.848, 13.226, 11.65, 12.685, 13.61, 11.668, 7.233, 17.165, 11.999, 17.212, 18.44, 18.788, 19.748, 22.017, 18.579, 21.215, 21.142, 20.073, 14.076, 17.479, 14.486, 23.294, 22.433, 22.567, 25.685, 25.418, 22.637, 26.683, 26.223, 25.313, 17.407, 23.548, 23.34, 34.177, 29.846, 35.368, 33.431, 31.671, 46.704, 43.465, 37.696, 34.905, 19.74, 75.805, 64.552, 81.836, 71.394, 88.075, 98.048, 94.132, 92.276, 88.576, 82.355, 80.215, 53.811, 75.561, 58.363, 67.635, 72.539, 67.075, 70.119, 79.856, 58.318, 59.239, 59.987, 58.021, 53.52, 58.05, 44.521, 40.757, 45.633, 48.354, 46.368, 56.026, 40.394, 45.442, 43.014, 41.398, 35.804];const HH_100K=[1.348, 0.701, 1.618, 1.348, 1.78, 1.564, 1.618, 2.104, 1.888, 1.834, 2.373, 1.025, 1.834, 2.05, 2.265, 2.643, 2.913, 3.182, 2.697, 2.805, 2.751, 4.639, 3.236, 3.128, 2.535, 2.481, 4.207, 3.884, 3.776, 4.153, 4.261, 3.83, 4.801, 4.693, 5.232, 2.913, 4.477, 4.423, 5.772, 4.962, 5.07, 5.879, 4.045, 8.792, 7.713, 5.879, 6.742, 4.962, 12.46, 10.95, 13.701, 13.808, 16.236, 20.875, 25.621, 25.244, 22.331, 17.045, 17.045, 10.842, 17.53, 15.858, 18.987, 18.178, 17.53, 17.315, 20.443, 15.804, 17.422, 17.368, 17.584, 16.128, 16.775, 14.564, 15.696, 16.613, 17.854, 16.883, 24.057, 14.725, 19.958, 18.987, 16.128, 17.476];const NAT_KM2=[0.0278, 0.018, 0.0228, 0.0256, 0.027, 0.0255, 0.0311, 0.0274, 0.0298, 0.032, 0.0274, 0.017, 0.0404, 0.0282, 0.0405, 0.0434, 0.0442, 0.0465, 0.0518, 0.0437, 0.0499, 0.0497, 0.0472, 0.0331, 0.0411, 0.0341, 0.0548, 0.0528, 0.0531, 0.0604, 0.0598, 0.0532, 0.0628, 0.0617, 0.0595, 0.0409, 0.0554, 0.0549, 0.0804, 0.0702, 0.0832, 0.0786, 0.0745, 0.1099, 0.1022, 0.0887, 0.0821, 0.0464, 0.1783, 0.1518, 0.1925, 0.1679, 0.2072, 0.2306, 0.2214, 0.2171, 0.2083, 0.1937, 0.1887, 0.1266, 0.1777, 0.1373, 0.1591, 0.1706, 0.1578, 0.1649, 0.1878, 0.1372, 0.1393, 0.1411, 0.1365, 0.1259, 0.1365, 0.1047, 0.0959, 0.1073, 0.1137, 0.1091, 0.1318, 0.095, 0.1069, 0.1012, 0.0974, 0.0842];const HH_KM2=[0.0331, 0.0172, 0.0397, 0.0331, 0.0437, 0.0384, 0.0397, 0.0517, 0.0464, 0.045, 0.0583, 0.0252, 0.045, 0.0503, 0.0556, 0.0649, 0.0715, 0.0781, 0.0662, 0.0689, 0.0675, 0.1139, 0.0795, 0.0768, 0.0623, 0.0609, 0.1033, 0.0954, 0.0927, 0.102, 0.1046, 0.094, 0.1179, 0.1152, 0.1285, 0.0715, 0.1099, 0.1086, 0.1417, 0.1219, 0.1245, 0.1444, 0.0993, 0.2159, 0.1894, 0.1444, 0.1656, 0.1219, 0.306, 0.2689, 0.3364, 0.3391, 0.3987, 0.5126, 0.6291, 0.6199, 0.5483, 0.4185, 0.4185, 0.2662, 0.4305, 0.3894, 0.4662, 0.4464, 0.4305, 0.4252, 0.502, 0.3881, 0.4278, 0.4265, 0.4318, 0.396, 0.4119, 0.3576, 0.3854, 0.4079, 0.4384, 0.4146, 0.5907, 0.3616, 0.4901, 0.4662, 0.396, 0.4291];const REL_DIFF=[-88.59, -90.83, -83.34, -87.61, -84.49, -85.58, -87.77, -81.94, -85.12, -86.52, -79.66, -85.83, -89.32, -82.92, -86.84, -85.67, -84.5, -83.89, -87.75, -84.9, -87.03, -78.06, -83.88, -77.78, -85.5, -82.87, -81.94, -82.69, -83.27, -83.83, -83.24, -83.08, -82.01, -82.1, -79.33, -83.27, -80.99, -81.05, -83.11, -83.37, -85.67, -82.41, -87.23, -81.18, -82.25, -84.4, -80.68, -74.86, -83.56, -83.04, -83.26, -80.66, -81.57, -78.71, -72.78, -72.64, -74.79, -79.3, -78.75, -79.85, -76.8, -72.83, -71.93, -74.94, -73.87, -75.31, -74.4, -72.9, -70.59, -71.05, -69.69, -69.87, -71.1, -67.29, -61.49, -63.59, -63.08, -63.59, -57.06, -63.55, -56.08, -55.86, -61.04, -51.19];const ANN_NAT=[{"year": 2010, "count": 257447}, {"year": 2011, "count": 259420}, {"year": 2012, "count": 173396}, {"year": 2013, "count": 119127}, {"year": 2014, "count": 72112}, {"year": 2015, "count": 47744}, {"year": 2016, "count": 50804}, {"year": 2017, "count": 66108}, {"year": 2018, "count": 75484}, {"year": 2019, "count": 111249}, {"year": 2020, "count": 185181}, {"year": 2021, "count": 226484}, {"year": 2022, "count": 330870}, {"year": 2023, "count": 815703}, {"year": 2024, "count": 655396}];const ANN_HH=[{"year": 2010, "count": 260}, {"year": 2011, "count": 377}, {"year": 2012, "count": 284}, {"year": 2013, "count": 267}, {"year": 2014, "count": 181}, {"year": 2015, "count": 147}, {"year": 2016, "count": 202}, {"year": 2017, "count": 232}, {"year": 2018, "count": 292}, {"year": 2019, "count": 356}, {"year": 2020, "count": 633}, {"year": 2021, "count": 867}, {"year": 2022, "count": 1274}, {"year": 2023, "count": 3822}, {"year": 2024, "count": 3896}];const IDX_NAT=[{"year": 2019, "idx": 100.0}, {"year": 2020, "idx": 166.5}, {"year": 2021, "idx": 203.6}, {"year": 2022, "idx": 297.4}, {"year": 2023, "idx": 733.2}, {"year": 2024, "idx": 589.1}];const IDX_HH=[{"year": 2019, "idx": 100.0}, {"year": 2020, "idx": 177.8}, {"year": 2021, "idx": 243.5}, {"year": 2022, "idx": 357.9}, {"year": 2023, "idx": 1073.6}, {"year": 2024, "idx": 1094.4}];const BL=[{"Bundesland": "Berlin", "count": 32697, "pop": 3677472, "area": 892, "per_km2": 36.7, "per_100k": 889.1}, {"Bundesland": "Nordrhein-Westfalen", "count": 805012, "pop": 18139116, "area": 34112, "per_km2": 23.6, "per_100k": 4438.0}, {"Bundesland": "Hamburg", "count": 17729, "pop": 1853935, "area": 755, "per_km2": 23.5, "per_100k": 956.3}, {"Bundesland": "Bremen", "count": 9290, "pop": 676463, "area": 419, "per_km2": 22.2, "per_100k": 1373.3}, {"Bundesland": "Baden-W\u00fcrttemberg", "count": 760745, "pop": 11280257, "area": 35748, "per_km2": 21.3, "per_100k": 6744.0}, {"Bundesland": "Saarland", "count": 52033, "pop": 994187, "area": 2570, "per_km2": 20.2, "per_100k": 5233.7}, {"Bundesland": "Bayern", "count": 1130217, "pop": 13369393, "area": 70541, "per_km2": 16.0, "per_100k": 8453.8}, {"Bundesland": "Hessen", "count": 294038, "pop": 6391262, "area": 21116, "per_km2": 13.9, "per_100k": 4600.6}, {"Bundesland": "Rheinland-Pfalz", "count": 265005, "pop": 4159150, "area": 19854, "per_km2": 13.3, "per_100k": 6371.6}, {"Bundesland": "Niedersachsen", "count": 484110, "pop": 8140243, "area": 47616, "per_km2": 10.2, "per_100k": 5947.1}, {"Bundesland": "Schleswig-Holstein", "count": 141873, "pop": 2922005, "area": 15800, "per_km2": 9.0, "per_100k": 4855.3}, {"Bundesland": "Sachsen", "count": 139798, "pop": 4086152, "area": 18416, "per_km2": 7.6, "per_100k": 3421.3}, {"Bundesland": "Th\u00fcringen", "count": 91148, "pop": 2118638, "area": 16202, "per_km2": 5.6, "per_100k": 4302.2}, {"Bundesland": "Sachsen-Anhalt", "count": 96442, "pop": 2180684, "area": 20452, "per_km2": 4.7, "per_100k": 4422.6}, {"Bundesland": "Brandenburg", "count": 128684, "pop": 2537868, "area": 29654, "per_km2": 4.3, "per_100k": 5070.6}, {"Bundesland": "Mecklenburg-Vorpommern", "count": 60488, "pop": 1628378, "area": 23213, "per_km2": 2.6, "per_100k": 3714.6}];const TYPE_NAT=[{"year": 2010, "total": 257447, "small_pct": 49.1, "med_pct": 48.2, "large_pct": 2.5, "util_pct": 0.2}, {"year": 2011, "total": 259420, "small_pct": 56.2, "med_pct": 41.1, "large_pct": 2.5, "util_pct": 0.2}, {"year": 2012, "total": 173396, "small_pct": 62.2, "med_pct": 34.1, "large_pct": 3.3, "util_pct": 0.4}, {"year": 2013, "total": 119127, "small_pct": 75.1, "med_pct": 22.7, "large_pct": 1.9, "util_pct": 0.3}, {"year": 2014, "total": 72112, "small_pct": 79.7, "med_pct": 18.0, "large_pct": 2.1, "util_pct": 0.2}, {"year": 2015, "total": 47744, "small_pct": 85.0, "med_pct": 12.0, "large_pct": 2.7, "util_pct": 0.3}, {"year": 2016, "total": 50804, "small_pct": 86.5, "med_pct": 11.8, "large_pct": 1.3, "util_pct": 0.4}, {"year": 2017, "total": 66108, "small_pct": 84.3, "med_pct": 13.5, "large_pct": 2.0, "util_pct": 0.1}, {"year": 2018, "total": 75484, "small_pct": 78.6, "med_pct": 16.8, "large_pct": 4.4, "util_pct": 0.2}, {"year": 2019, "total": 111249, "small_pct": 77.9, "med_pct": 17.6, "large_pct": 4.5, "util_pct": 0.1}, {"year": 2020, "total": 185181, "small_pct": 83.3, "med_pct": 14.2, "large_pct": 2.4, "util_pct": 0.1}, {"year": 2021, "total": 226484, "small_pct": 78.3, "med_pct": 20.2, "large_pct": 1.3, "util_pct": 0.1}, {"year": 2022, "total": 330870, "small_pct": 81.7, "med_pct": 17.3, "large_pct": 0.8, "util_pct": 0.2}, {"year": 2023, "total": 815703, "small_pct": 80.1, "med_pct": 19.1, "large_pct": 0.7, "util_pct": 0.1}, {"year": 2024, "total": 655396, "small_pct": 74.0, "med_pct": 24.8, "large_pct": 1.1, "util_pct": 0.1}, {"year": 2025, "total": 458439, "small_pct": 66.6, "med_pct": 31.9, "large_pct": 1.3, "util_pct": 0.2}];const TYPE_HH=[{"year": 2010, "total": 260, "small_pct": 72.3, "med_pct": 25.8, "large_pct": 1.9, "util_pct": 0.0}, {"year": 2011, "total": 377, "small_pct": 68.4, "med_pct": 28.1, "large_pct": 3.4, "util_pct": 0.0}, {"year": 2012, "total": 284, "small_pct": 75.0, "med_pct": 22.5, "large_pct": 2.5, "util_pct": 0.0}, {"year": 2013, "total": 267, "small_pct": 82.0, "med_pct": 16.1, "large_pct": 1.9, "util_pct": 0.0}, {"year": 2014, "total": 181, "small_pct": 87.8, "med_pct": 12.2, "large_pct": 0.0, "util_pct": 0.0}, {"year": 2015, "total": 147, "small_pct": 86.4, "med_pct": 12.9, "large_pct": 0.7, "util_pct": 0.0}, {"year": 2016, "total": 202, "small_pct": 91.6, "med_pct": 8.4, "large_pct": 0.0, "util_pct": 0.0}, {"year": 2017, "total": 232, "small_pct": 89.7, "med_pct": 8.6, "large_pct": 1.7, "util_pct": 0.0}, {"year": 2018, "total": 292, "small_pct": 81.5, "med_pct": 17.5, "large_pct": 1.0, "util_pct": 0.0}, {"year": 2019, "total": 356, "small_pct": 84.8, "med_pct": 14.3, "large_pct": 0.8, "util_pct": 0.0}, {"year": 2020, "total": 633, "small_pct": 85.3, "med_pct": 13.3, "large_pct": 1.4, "util_pct": 0.0}, {"year": 2021, "total": 867, "small_pct": 86.2, "med_pct": 13.5, "large_pct": 0.3, "util_pct": 0.0}, {"year": 2022, "total": 1274, "small_pct": 88.5, "med_pct": 11.1, "large_pct": 0.4, "util_pct": 0.0}, {"year": 2023, "total": 3822, "small_pct": 85.2, "med_pct": 14.3, "large_pct": 0.5, "util_pct": 0.0}, {"year": 2024, "total": 3896, "small_pct": 77.5, "med_pct": 21.8, "large_pct": 0.7, "util_pct": 0.0}, {"year": 2025, "total": 3888, "small_pct": 72.2, "med_pct": 26.9, "large_pct": 0.9, "util_pct": 0.0}];const PRIV_NAT=[{"year": 2010, "priv_pct": 85.7, "total": 257447}, {"year": 2011, "priv_pct": 87.2, "total": 259420}, {"year": 2012, "priv_pct": 88.0, "total": 173396}, {"year": 2013, "priv_pct": 88.9, "total": 119127}, {"year": 2014, "priv_pct": 86.6, "total": 72112}, {"year": 2015, "priv_pct": 86.5, "total": 47744}, {"year": 2016, "priv_pct": 86.5, "total": 50804}, {"year": 2017, "priv_pct": 87.0, "total": 66108}, {"year": 2018, "priv_pct": 84.3, "total": 75484}, {"year": 2019, "priv_pct": 86.0, "total": 111249}, {"year": 2020, "priv_pct": 89.6, "total": 185181}, {"year": 2021, "priv_pct": 91.8, "total": 226484}, {"year": 2022, "priv_pct": 93.9, "total": 330870}, {"year": 2023, "priv_pct": 95.5, "total": 815703}, {"year": 2024, "priv_pct": 93.2, "total": 655396}, {"year": 2025, "priv_pct": 91.7, "total": 458439}];const PRIV_HH=[{"year": 2010, "priv_pct": 78.8, "total": 260}, {"year": 2011, "priv_pct": 75.9, "total": 377}, {"year": 2012, "priv_pct": 83.8, "total": 284}, {"year": 2013, "priv_pct": 82.4, "total": 267}, {"year": 2014, "priv_pct": 82.9, "total": 181}, {"year": 2015, "priv_pct": 80.3, "total": 147}, {"year": 2016, "priv_pct": 81.2, "total": 202}, {"year": 2017, "priv_pct": 80.6, "total": 232}, {"year": 2018, "priv_pct": 64.0, "total": 292}, {"year": 2019, "priv_pct": 78.9, "total": 356}, {"year": 2020, "priv_pct": 81.8, "total": 633}, {"year": 2021, "priv_pct": 89.6, "total": 867}, {"year": 2022, "priv_pct": 93.3, "total": 1274}, {"year": 2023, "priv_pct": 94.1, "total": 3822}, {"year": 2024, "priv_pct": 89.9, "total": 3896}, {"year": 2025, "priv_pct": 86.7, "total": 3888}];const MONTHS_POST=["2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12"];const HH_ABS_POST=[231, 203, 254, 256, 301, 387, 475, 468, 414, 316, 316, 201, 325, 294, 352, 337, 325, 321, 379, 293, 323, 322, 326, 299, 311, 270, 291, 308, 331, 313, 446, 273, 370, 352, 299, 324];const NAT_ABS_POST=[63676, 54224, 68742, 59971, 73983, 82360, 79071, 77512, 74404, 69178, 67381, 45201, 63471, 49025, 56813, 60933, 56343, 58900, 67079, 48987, 49761, 50389, 48738, 44957, 48762, 37398, 34236, 38332, 40617, 38949, 47062, 33931, 38171, 36132, 34774, 30075];const HH_100K_POST=[12.46, 10.95, 13.701, 13.808, 16.236, 20.875, 25.621, 25.244, 22.331, 17.045, 17.045, 10.842, 17.53, 15.858, 18.987, 18.178, 17.53, 17.315, 20.443, 15.804, 17.422, 17.368, 17.584, 16.128, 16.775, 14.564, 15.696, 16.613, 17.854, 16.883, 24.057, 14.725, 19.958, 18.987, 16.128, 17.476];const NAT_100K_POST=[75.805, 64.552, 81.836, 71.394, 88.075, 98.048, 94.132, 92.276, 88.576, 82.355, 80.215, 53.811, 75.561, 58.363, 67.635, 72.539, 67.075, 70.119, 79.856, 58.318, 59.239, 59.987, 58.021, 53.52, 58.05, 44.521, 40.757, 45.633, 48.354, 46.368, 56.026, 40.394, 45.442, 43.014, 41.398, 35.804];
+const MONTHS=["2019-01", "2019-02", "2019-03", "2019-04", "2019-05", "2019-06", "2019-07", "2019-08", "2019-09", "2019-10", "2019-11", "2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05", "2020-06", "2020-07", "2020-08", "2020-09", "2020-10", "2020-11", "2020-12", "2021-01", "2021-02", "2021-03", "2021-04", "2021-05", "2021-06", "2021-07", "2021-08", "2021-09", "2021-10", "2021-11", "2021-12", "2022-01", "2022-02", "2022-03", "2022-04", "2022-05", "2022-06", "2022-07", "2022-08", "2022-09", "2022-10", "2022-11", "2022-12", "2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12"];const NAT_ABS=[9921, 6422, 8158, 9139, 9637, 9112, 11110, 9786, 10655, 11432, 9801, 6076, 14419, 10079, 14458, 15490, 15782, 16588, 18494, 15606, 17821, 17759, 16861, 11824, 14682, 12168, 19567, 18844, 18956, 21575, 21351, 19015, 22414, 22027, 21263, 14622, 19780, 19606, 28709, 25071, 29709, 28082, 26604, 39231, 36511, 31665, 29320, 16582, 63676, 54224, 68742, 59971, 73983, 82360, 79071, 77512, 74404, 69178, 67381, 45201, 63471, 49025, 56813, 60933, 56343, 58900, 67079, 48987, 49761, 50389, 48738, 44957, 48762, 37398, 34236, 38332, 40617, 38949, 47062, 33931, 38171, 36132, 34774, 30075];const HH_ABS=[25, 13, 30, 25, 33, 29, 30, 39, 35, 34, 44, 19, 34, 38, 42, 49, 54, 59, 50, 52, 51, 86, 60, 58, 47, 46, 78, 72, 70, 77, 79, 71, 89, 87, 97, 54, 83, 82, 107, 92, 94, 109, 75, 163, 143, 109, 125, 92, 231, 203, 254, 256, 301, 387, 475, 468, 414, 316, 316, 201, 325, 294, 352, 337, 325, 321, 379, 293, 323, 322, 326, 299, 311, 270, 291, 308, 331, 313, 446, 273, 370, 352, 299, 324];const NAT_100K=[11.811, 7.645, 9.712, 10.88, 11.473, 10.848, 13.226, 11.65, 12.685, 13.61, 11.668, 7.233, 17.165, 11.999, 17.212, 18.44, 18.788, 19.748, 22.017, 18.579, 21.215, 21.142, 20.073, 14.076, 17.479, 14.486, 23.294, 22.433, 22.567, 25.685, 25.418, 22.637, 26.683, 26.223, 25.313, 17.407, 23.548, 23.34, 34.177, 29.846, 35.368, 33.431, 31.671, 46.704, 43.465, 37.696, 34.905, 19.74, 75.805, 64.552, 81.836, 71.394, 88.075, 98.048, 94.132, 92.276, 88.576, 82.355, 80.215, 53.811, 75.561, 58.363, 67.635, 72.539, 67.075, 70.119, 79.856, 58.318, 59.239, 59.987, 58.021, 53.52, 58.05, 44.521, 40.757, 45.633, 48.354, 46.368, 56.026, 40.394, 45.442, 43.014, 41.398, 35.804];const HH_100K=[1.348, 0.701, 1.618, 1.348, 1.78, 1.564, 1.618, 2.104, 1.888, 1.834, 2.373, 1.025, 1.834, 2.05, 2.265, 2.643, 2.913, 3.182, 2.697, 2.805, 2.751, 4.639, 3.236, 3.128, 2.535, 2.481, 4.207, 3.884, 3.776, 4.153, 4.261, 3.83, 4.801, 4.693, 5.232, 2.913, 4.477, 4.423, 5.772, 4.962, 5.07, 5.879, 4.045, 8.792, 7.713, 5.879, 6.742, 4.962, 12.46, 10.95, 13.701, 13.808, 16.236, 20.875, 25.621, 25.244, 22.331, 17.045, 17.045, 10.842, 17.53, 15.858, 18.987, 18.178, 17.53, 17.315, 20.443, 15.804, 17.422, 17.368, 17.584, 16.128, 16.775, 14.564, 15.696, 16.613, 17.854, 16.883, 24.057, 14.725, 19.958, 18.987, 16.128, 17.476];const NAT_KM2=[0.0278, 0.018, 0.0228, 0.0256, 0.027, 0.0255, 0.0311, 0.0274, 0.0298, 0.032, 0.0274, 0.017, 0.0404, 0.0282, 0.0405, 0.0434, 0.0442, 0.0465, 0.0518, 0.0437, 0.0499, 0.0497, 0.0472, 0.0331, 0.0411, 0.0341, 0.0548, 0.0528, 0.0531, 0.0604, 0.0598, 0.0532, 0.0628, 0.0617, 0.0595, 0.0409, 0.0554, 0.0549, 0.0804, 0.0702, 0.0832, 0.0786, 0.0745, 0.1099, 0.1022, 0.0887, 0.0821, 0.0464, 0.1783, 0.1518, 0.1925, 0.1679, 0.2072, 0.2306, 0.2214, 0.2171, 0.2083, 0.1937, 0.1887, 0.1266, 0.1777, 0.1373, 0.1591, 0.1706, 0.1578, 0.1649, 0.1878, 0.1372, 0.1393, 0.1411, 0.1365, 0.1259, 0.1365, 0.1047, 0.0959, 0.1073, 0.1137, 0.1091, 0.1318, 0.095, 0.1069, 0.1012, 0.0974, 0.0842];const HH_KM2=[0.0331, 0.0172, 0.0397, 0.0331, 0.0437, 0.0384, 0.0397, 0.0517, 0.0464, 0.045, 0.0583, 0.0252, 0.045, 0.0503, 0.0556, 0.0649, 0.0715, 0.0781, 0.0662, 0.0689, 0.0675, 0.1139, 0.0795, 0.0768, 0.0623, 0.0609, 0.1033, 0.0954, 0.0927, 0.102, 0.1046, 0.094, 0.1179, 0.1152, 0.1285, 0.0715, 0.1099, 0.1086, 0.1417, 0.1219, 0.1245, 0.1444, 0.0993, 0.2159, 0.1894, 0.1444, 0.1656, 0.1219, 0.306, 0.2689, 0.3364, 0.3391, 0.3987, 0.5126, 0.6291, 0.6199, 0.5483, 0.4185, 0.4185, 0.2662, 0.4305, 0.3894, 0.4662, 0.4464, 0.4305, 0.4252, 0.502, 0.3881, 0.4278, 0.4265, 0.4318, 0.396, 0.4119, 0.3576, 0.3854, 0.4079, 0.4384, 0.4146, 0.5907, 0.3616, 0.4901, 0.4662, 0.396, 0.4291];const HH_BLDG=[0.0959, 0.0499, 0.1151, 0.0959, 0.1266, 0.1112, 0.1151, 0.1496, 0.1342, 0.1304, 0.1688, 0.0729, 0.1304, 0.1457, 0.1611, 0.1879, 0.2071, 0.2263, 0.1918, 0.1994, 0.1956, 0.3298, 0.2301, 0.2225, 0.1803, 0.1764, 0.2992, 0.2761, 0.2685, 0.2953, 0.303, 0.2723, 0.3413, 0.3337, 0.372, 0.2071, 0.3183, 0.3145, 0.4104, 0.3529, 0.3605, 0.4181, 0.2877, 0.6252, 0.5485, 0.4181, 0.4794, 0.3529, 0.886, 0.7786, 0.9742, 0.9819, 1.1545, 1.4843, 1.8218, 1.795, 1.5878, 1.212, 1.212, 0.7709, 1.2465, 1.1276, 1.3501, 1.2925, 1.2465, 1.2312, 1.4536, 1.1238, 1.2388, 1.235, 1.2503, 1.1468, 1.1928, 1.0356, 1.1161, 1.1813, 1.2695, 1.2005, 1.7106, 1.0471, 1.4191, 1.3501, 1.1468, 1.2427];const NAT_BLDG=[0.4961, 0.3211, 0.408, 0.457, 0.4819, 0.4557, 0.5556, 0.4894, 0.5328, 0.5717, 0.4901, 0.3038, 0.721, 0.504, 0.723, 0.7746, 0.7892, 0.8295, 0.9248, 0.7804, 0.8912, 0.8881, 0.8432, 0.5913, 0.7342, 0.6085, 0.9785, 0.9423, 0.9479, 1.0789, 1.0677, 0.9509, 1.1209, 1.1015, 1.0633, 0.7312, 0.9891, 0.9804, 1.4356, 1.2537, 1.4857, 1.4043, 1.3304, 1.9618, 1.8258, 1.5835, 1.4662, 0.8292, 3.1842, 2.7116, 3.4376, 2.999, 3.6997, 4.1186, 3.9541, 3.8761, 3.7207, 3.4594, 3.3695, 2.2604, 3.174, 2.4516, 2.841, 3.0471, 2.8175, 2.9454, 3.3544, 2.4497, 2.4884, 2.5198, 2.4372, 2.2482, 2.4384, 1.8702, 1.712, 1.9169, 2.0311, 1.9477, 2.3534, 1.6968, 1.9088, 1.8068, 1.7389, 1.504];const REL_DIFF=[-88.59, -90.83, -83.34, -87.61, -84.49, -85.58, -87.77, -81.94, -85.12, -86.52, -79.66, -85.83, -89.32, -82.92, -86.84, -85.67, -84.5, -83.89, -87.75, -84.9, -87.03, -78.06, -83.88, -77.78, -85.5, -82.87, -81.94, -82.69, -83.27, -83.83, -83.24, -83.08, -82.01, -82.1, -79.33, -83.27, -80.99, -81.05, -83.11, -83.37, -85.67, -82.41, -87.23, -81.18, -82.25, -84.4, -80.68, -74.86, -83.56, -83.04, -83.26, -80.66, -81.57, -78.71, -72.78, -72.64, -74.79, -79.3, -78.75, -79.85, -76.8, -72.83, -71.93, -74.94, -73.87, -75.31, -74.4, -72.9, -70.59, -71.05, -69.69, -69.87, -71.1, -67.29, -61.49, -63.59, -63.08, -63.59, -57.06, -63.55, -56.08, -55.86, -61.04, -51.19];const ANN_NAT=[{"year": 2010, "count": 257447, "per_bldg": 12.87}, {"year": 2011, "count": 259420, "per_bldg": 12.97}, {"year": 2012, "count": 173396, "per_bldg": 8.67}, {"year": 2013, "count": 119127, "per_bldg": 5.96}, {"year": 2014, "count": 72112, "per_bldg": 3.61}, {"year": 2015, "count": 47744, "per_bldg": 2.39}, {"year": 2016, "count": 50804, "per_bldg": 2.54}, {"year": 2017, "count": 66108, "per_bldg": 3.31}, {"year": 2018, "count": 75484, "per_bldg": 3.77}, {"year": 2019, "count": 111249, "per_bldg": 5.56}, {"year": 2020, "count": 185181, "per_bldg": 9.26}, {"year": 2021, "count": 226484, "per_bldg": 11.33}, {"year": 2022, "count": 330870, "per_bldg": 16.55}, {"year": 2023, "count": 815703, "per_bldg": 40.79}, {"year": 2024, "count": 655396, "per_bldg": 32.77}];const ANN_HH=[{"year": 2010, "count": 260, "per_bldg": 1.0}, {"year": 2011, "count": 377, "per_bldg": 1.45}, {"year": 2012, "count": 284, "per_bldg": 1.09}, {"year": 2013, "count": 267, "per_bldg": 1.02}, {"year": 2014, "count": 181, "per_bldg": 0.69}, {"year": 2015, "count": 147, "per_bldg": 0.56}, {"year": 2016, "count": 202, "per_bldg": 0.77}, {"year": 2017, "count": 232, "per_bldg": 0.89}, {"year": 2018, "count": 292, "per_bldg": 1.12}, {"year": 2019, "count": 356, "per_bldg": 1.37}, {"year": 2020, "count": 633, "per_bldg": 2.43}, {"year": 2021, "count": 867, "per_bldg": 3.33}, {"year": 2022, "count": 1274, "per_bldg": 4.89}, {"year": 2023, "count": 3822, "per_bldg": 14.66}, {"year": 2024, "count": 3896, "per_bldg": 14.94}];const IDX_NAT=[{"year": 2019, "idx": 100.0}, {"year": 2020, "idx": 166.5}, {"year": 2021, "idx": 203.6}, {"year": 2022, "idx": 297.4}, {"year": 2023, "idx": 733.2}, {"year": 2024, "idx": 589.1}];const IDX_HH=[{"year": 2019, "idx": 100.0}, {"year": 2020, "idx": 177.8}, {"year": 2021, "idx": 243.5}, {"year": 2022, "idx": 357.9}, {"year": 2023, "idx": 1073.6}, {"year": 2024, "idx": 1094.4}];const BL=[{"Bundesland": "Berlin", "count": 32697, "pop": 3677472, "area": 892, "per_km2": 36.7, "per_100k": 889.1, "buildings": 338763, "per_building": 96.52}, {"Bundesland": "Nordrhein-Westfalen", "count": 805012, "pop": 18139116, "area": 34112, "per_km2": 23.6, "per_100k": 4438.0, "buildings": 4047520, "per_building": 198.89}, {"Bundesland": "Hamburg", "count": 17729, "pop": 1853935, "area": 755, "per_km2": 23.5, "per_100k": 956.3, "buildings": 260730, "per_building": 68.0}, {"Bundesland": "Bremen", "count": 9290, "pop": 676463, "area": 419, "per_km2": 22.2, "per_100k": 1373.3, "buildings": 144238, "per_building": 64.41}, {"Bundesland": "Baden-W\u00fcrttemberg", "count": 760745, "pop": 11280257, "area": 35748, "per_km2": 21.3, "per_100k": 6744.0, "buildings": 2571394, "per_building": 295.85}, {"Bundesland": "Saarland", "count": 52033, "pop": 994187, "area": 2570, "per_km2": 20.2, "per_100k": 5233.7, "buildings": 315217, "per_building": 165.07}, {"Bundesland": "Bayern", "count": 1130217, "pop": 13369393, "area": 70541, "per_km2": 16.0, "per_100k": 8453.8, "buildings": 3236933, "per_building": 349.16}, {"Bundesland": "Hessen", "count": 294038, "pop": 6391262, "area": 21116, "per_km2": 13.9, "per_100k": 4600.6, "buildings": 1445928, "per_building": 203.36}, {"Bundesland": "Rheinland-Pfalz", "count": 265005, "pop": 4159150, "area": 19854, "per_km2": 13.3, "per_100k": 6371.6, "buildings": 1235711, "per_building": 214.46}, {"Bundesland": "Niedersachsen", "count": 484110, "pop": 8140243, "area": 47616, "per_km2": 10.2, "per_100k": 5947.1, "buildings": 2370688, "per_building": 204.21}, {"Bundesland": "Schleswig-Holstein", "count": 141873, "pop": 2922005, "area": 15800, "per_km2": 9.0, "per_100k": 4855.3, "buildings": 868352, "per_building": 163.38}, {"Bundesland": "Sachsen", "count": 139798, "pop": 4086152, "area": 18416, "per_km2": 7.6, "per_100k": 3421.3, "buildings": 862391, "per_building": 162.11}, {"Bundesland": "Th\u00fcringen", "count": 91148, "pop": 2118638, "area": 16202, "per_km2": 5.6, "per_100k": 4302.2, "buildings": 569613, "per_building": 160.02}, {"Bundesland": "Sachsen-Anhalt", "count": 96442, "pop": 2180684, "area": 20452, "per_km2": 4.7, "per_100k": 4422.6, "buildings": 595137, "per_building": 162.05}, {"Bundesland": "Brandenburg", "count": 128684, "pop": 2537868, "area": 29654, "per_km2": 4.3, "per_100k": 5070.6, "buildings": 714472, "per_building": 180.11}, {"Bundesland": "Mecklenburg-Vorpommern", "count": 60488, "pop": 1628378, "area": 23213, "per_km2": 2.6, "per_100k": 3714.6, "buildings": 420201, "per_building": 143.95}];const TYPE_NAT=[{"year": 2010, "total": 257447, "small_pct": 49.1, "med_pct": 48.2, "large_pct": 2.5, "util_pct": 0.2}, {"year": 2011, "total": 259420, "small_pct": 56.2, "med_pct": 41.1, "large_pct": 2.5, "util_pct": 0.2}, {"year": 2012, "total": 173396, "small_pct": 62.2, "med_pct": 34.1, "large_pct": 3.3, "util_pct": 0.4}, {"year": 2013, "total": 119127, "small_pct": 75.1, "med_pct": 22.7, "large_pct": 1.9, "util_pct": 0.3}, {"year": 2014, "total": 72112, "small_pct": 79.7, "med_pct": 18.0, "large_pct": 2.1, "util_pct": 0.2}, {"year": 2015, "total": 47744, "small_pct": 85.0, "med_pct": 12.0, "large_pct": 2.7, "util_pct": 0.3}, {"year": 2016, "total": 50804, "small_pct": 86.5, "med_pct": 11.8, "large_pct": 1.3, "util_pct": 0.4}, {"year": 2017, "total": 66108, "small_pct": 84.3, "med_pct": 13.5, "large_pct": 2.0, "util_pct": 0.1}, {"year": 2018, "total": 75484, "small_pct": 78.6, "med_pct": 16.8, "large_pct": 4.4, "util_pct": 0.2}, {"year": 2019, "total": 111249, "small_pct": 77.9, "med_pct": 17.6, "large_pct": 4.5, "util_pct": 0.1}, {"year": 2020, "total": 185181, "small_pct": 83.3, "med_pct": 14.2, "large_pct": 2.4, "util_pct": 0.1}, {"year": 2021, "total": 226484, "small_pct": 78.3, "med_pct": 20.2, "large_pct": 1.3, "util_pct": 0.1}, {"year": 2022, "total": 330870, "small_pct": 81.7, "med_pct": 17.3, "large_pct": 0.8, "util_pct": 0.2}, {"year": 2023, "total": 815703, "small_pct": 80.1, "med_pct": 19.1, "large_pct": 0.7, "util_pct": 0.1}, {"year": 2024, "total": 655396, "small_pct": 74.0, "med_pct": 24.8, "large_pct": 1.1, "util_pct": 0.1}, {"year": 2025, "total": 458439, "small_pct": 66.6, "med_pct": 31.9, "large_pct": 1.3, "util_pct": 0.2}];const TYPE_HH=[{"year": 2010, "total": 260, "small_pct": 72.3, "med_pct": 25.8, "large_pct": 1.9, "util_pct": 0.0}, {"year": 2011, "total": 377, "small_pct": 68.4, "med_pct": 28.1, "large_pct": 3.4, "util_pct": 0.0}, {"year": 2012, "total": 284, "small_pct": 75.0, "med_pct": 22.5, "large_pct": 2.5, "util_pct": 0.0}, {"year": 2013, "total": 267, "small_pct": 82.0, "med_pct": 16.1, "large_pct": 1.9, "util_pct": 0.0}, {"year": 2014, "total": 181, "small_pct": 87.8, "med_pct": 12.2, "large_pct": 0.0, "util_pct": 0.0}, {"year": 2015, "total": 147, "small_pct": 86.4, "med_pct": 12.9, "large_pct": 0.7, "util_pct": 0.0}, {"year": 2016, "total": 202, "small_pct": 91.6, "med_pct": 8.4, "large_pct": 0.0, "util_pct": 0.0}, {"year": 2017, "total": 232, "small_pct": 89.7, "med_pct": 8.6, "large_pct": 1.7, "util_pct": 0.0}, {"year": 2018, "total": 292, "small_pct": 81.5, "med_pct": 17.5, "large_pct": 1.0, "util_pct": 0.0}, {"year": 2019, "total": 356, "small_pct": 84.8, "med_pct": 14.3, "large_pct": 0.8, "util_pct": 0.0}, {"year": 2020, "total": 633, "small_pct": 85.3, "med_pct": 13.3, "large_pct": 1.4, "util_pct": 0.0}, {"year": 2021, "total": 867, "small_pct": 86.2, "med_pct": 13.5, "large_pct": 0.3, "util_pct": 0.0}, {"year": 2022, "total": 1274, "small_pct": 88.5, "med_pct": 11.1, "large_pct": 0.4, "util_pct": 0.0}, {"year": 2023, "total": 3822, "small_pct": 85.2, "med_pct": 14.3, "large_pct": 0.5, "util_pct": 0.0}, {"year": 2024, "total": 3896, "small_pct": 77.5, "med_pct": 21.8, "large_pct": 0.7, "util_pct": 0.0}, {"year": 2025, "total": 3888, "small_pct": 72.2, "med_pct": 26.9, "large_pct": 0.9, "util_pct": 0.0}];const PRIV_NAT=[{"year": 2010, "priv_pct": 85.7, "total": 257447}, {"year": 2011, "priv_pct": 87.2, "total": 259420}, {"year": 2012, "priv_pct": 88.0, "total": 173396}, {"year": 2013, "priv_pct": 88.9, "total": 119127}, {"year": 2014, "priv_pct": 86.6, "total": 72112}, {"year": 2015, "priv_pct": 86.5, "total": 47744}, {"year": 2016, "priv_pct": 86.5, "total": 50804}, {"year": 2017, "priv_pct": 87.0, "total": 66108}, {"year": 2018, "priv_pct": 84.3, "total": 75484}, {"year": 2019, "priv_pct": 86.0, "total": 111249}, {"year": 2020, "priv_pct": 89.6, "total": 185181}, {"year": 2021, "priv_pct": 91.8, "total": 226484}, {"year": 2022, "priv_pct": 93.9, "total": 330870}, {"year": 2023, "priv_pct": 95.5, "total": 815703}, {"year": 2024, "priv_pct": 93.2, "total": 655396}, {"year": 2025, "priv_pct": 91.7, "total": 458439}];const PRIV_HH=[{"year": 2010, "priv_pct": 78.8, "total": 260}, {"year": 2011, "priv_pct": 75.9, "total": 377}, {"year": 2012, "priv_pct": 83.8, "total": 284}, {"year": 2013, "priv_pct": 82.4, "total": 267}, {"year": 2014, "priv_pct": 82.9, "total": 181}, {"year": 2015, "priv_pct": 80.3, "total": 147}, {"year": 2016, "priv_pct": 81.2, "total": 202}, {"year": 2017, "priv_pct": 80.6, "total": 232}, {"year": 2018, "priv_pct": 64.0, "total": 292}, {"year": 2019, "priv_pct": 78.9, "total": 356}, {"year": 2020, "priv_pct": 81.8, "total": 633}, {"year": 2021, "priv_pct": 89.6, "total": 867}, {"year": 2022, "priv_pct": 93.3, "total": 1274}, {"year": 2023, "priv_pct": 94.1, "total": 3822}, {"year": 2024, "priv_pct": 89.9, "total": 3896}, {"year": 2025, "priv_pct": 86.7, "total": 3888}];const MONTHS_POST=["2023-01", "2023-02", "2023-03", "2023-04", "2023-05", "2023-06", "2023-07", "2023-08", "2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12"];const HH_100K_POST=[12.46, 10.95, 13.701, 13.808, 16.236, 20.875, 25.621, 25.244, 22.331, 17.045, 17.045, 10.842, 17.53, 15.858, 18.987, 18.178, 17.53, 17.315, 20.443, 15.804, 17.422, 17.368, 17.584, 16.128, 16.775, 14.564, 15.696, 16.613, 17.854, 16.883, 24.057, 14.725, 19.958, 18.987, 16.128, 17.476];const NAT_100K_POST=[75.805, 64.552, 81.836, 71.394, 88.075, 98.048, 94.132, 92.276, 88.576, 82.355, 80.215, 53.811, 75.561, 58.363, 67.635, 72.539, 67.075, 70.119, 79.856, 58.318, 59.239, 59.987, 58.021, 53.52, 58.05, 44.521, 40.757, 45.633, 48.354, 46.368, 56.026, 40.394, 45.442, 43.014, 41.398, 35.804];const HH_BLDG_POST=[0.886, 0.7786, 0.9742, 0.9819, 1.1545, 1.4843, 1.8218, 1.795, 1.5878, 1.212, 1.212, 0.7709, 1.2465, 1.1276, 1.3501, 1.2925, 1.2465, 1.2312, 1.4536, 1.1238, 1.2388, 1.235, 1.2503, 1.1468, 1.1928, 1.0356, 1.1161, 1.1813, 1.2695, 1.2005, 1.7106, 1.0471, 1.4191, 1.3501, 1.1468, 1.2427];const NAT_BLDG_POST=[3.1842, 2.7116, 3.4376, 2.999, 3.6997, 4.1186, 3.9541, 3.8761, 3.7207, 3.4594, 3.3695, 2.2604, 3.174, 2.4516, 2.841, 3.0471, 2.8175, 2.9454, 3.3544, 2.4497, 2.4884, 2.5198, 2.4372, 2.2482, 2.4384, 1.8702, 1.712, 1.9169, 2.0311, 1.9477, 2.3534, 1.6968, 1.9088, 1.8068, 1.7389, 1.504];
 const HH='#2563eb',DE='#94a3b8',AMB='#f59e0b',GRN='#10b981',PUR='#6366f1',RED='#ef4444';
-const STATE_COLORS=BL.map(r=>r.Bundesland==='Hamburg'?HH:DE+'CC');
-
 function fmt(n){if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return n.toLocaleString();}
-
 function ch(id,cfg){return new Chart(document.getElementById(id).getContext('2d'),cfg);}
+const sharedOpts={responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false}};
 
-function lineOpts(y1label,y2label){
-  return{responsive:true,maintainAspectRatio:false,animation:false,
-    interaction:{mode:'index',intersect:false},
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed?ctx.parsed.y.toFixed(1):ctx.parsed.y}${y1label&&ctx.datasetIndex===0?' '+y1label:y2label&&ctx.datasetIndex===1?' '+y2label:''}`}}},
-    scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},
-      y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}};
-}
-
-// ── SECTION 1: Absolute monthly (dual axis)
+// ① ABS
 ch('c-abs-monthly',{type:'line',data:{labels:MONTHS,datasets:[
-  {label:'Hamburg',data:HH_ABS,borderColor:HH,backgroundColor:HH+'22',borderWidth:2,tension:.3,pointRadius:0,fill:false,yAxisID:'y'},
-  {label:'Germany',data:NAT_ABS,borderColor:DE,backgroundColor:DE+'22',borderWidth:2,tension:.3,pointRadius:0,fill:false,yAxisID:'y2',borderDash:[4,3]}
-]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-  interaction:{mode:'index',intersect:false},
-  plugins:{legend:{display:false}},
+  {label:'Hamburg',data:HH_ABS,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:0,fill:false,yAxisID:'y'},
+  {label:'Germany',data:NAT_ABS,borderColor:DE,borderWidth:1.5,tension:.3,pointRadius:0,fill:false,yAxisID:'y2',borderDash:[4,3]}
+]},options:{...sharedOpts,plugins:{legend:{display:false}},
   scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},
     y:{beginAtZero:true,position:'left',title:{display:true,text:'Hamburg'},ticks:{callback:v=>fmt(v)}},
     y2:{beginAtZero:true,position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Germany'},ticks:{callback:v=>fmt(v)}}}}});
 
-// Annual Hamburg
-ch('c-ann-hh',{type:'bar',data:{labels:ANN_HH.map(r=>r.year),datasets:[{label:'Systems',data:ANN_HH.map(r=>r.count),backgroundColor:HH+'CC',borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+function barChart(id,data,labels,col){ch(id,{type:'bar',data:{labels:labels||data.map(r=>r.year),datasets:[{label:'Systems',data:data.map(r=>r.count),backgroundColor:col+'CC',borderRadius:3}]},options:{...sharedOpts,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});}
+barChart('c-ann-hh',ANN_HH.filter(r=>r.year>=2015),null,HH);
+barChart('c-ann-de',ANN_NAT.filter(r=>r.year>=2015),null,DE);
 
-// Annual Germany
-ch('c-ann-de',{type:'bar',data:{labels:ANN_NAT.map(r=>r.year),datasets:[{label:'Systems',data:ANN_NAT.map(r=>r.count),backgroundColor:DE+'CC',borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
-
-// ── SECTION 2: per 100k
+// ② PER CAPITA
 ch('c-per100k',{type:'line',data:{labels:MONTHS,datasets:[
   {label:'Hamburg',data:HH_100K,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:0,fill:false},
   {label:'Germany',data:NAT_100K,borderColor:DE,borderWidth:1.5,tension:.3,pointRadius:0,fill:false,borderDash:[5,3]}
-]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-  interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},
+]},options:{...sharedOpts,plugins:{legend:{display:false}},
   scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/100k'}}}}});
 
-// Relative diff
 ch('c-reldiff',{type:'bar',data:{labels:MONTHS,datasets:[{label:'HH vs DE (%)',data:REL_DIFF,
   backgroundColor:REL_DIFF.map(v=>v>=0?GRN+'CC':RED+'CC'),borderRadius:2}]},
-  options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},
-    scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},
-      y:{ticks:{callback:v=>(v>0?'+':'')+v+'%'}}}}});
+  options:{...sharedOpts,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},y:{ticks:{callback:v=>(v>0?'+':'')+v+'%'}}}}});
 
-// Fill per-100k KPIs from annual data
 (function(){
   function annSum(arr,yr){const r=arr.find(x=>x.year===yr);return r?r.count:0;}
   const hh22=annSum(ANN_HH,2022)*100000/1853935,de22=annSum(ANN_NAT,2022)*100000/84000000;
@@ -341,157 +273,134 @@ ch('c-reldiff',{type:'bar',data:{labels:MONTHS,datasets:[{label:'HH vs DE (%)',d
   document.getElementById('k-de-24').textContent=de24.toFixed(0);
 })();
 
-// ── SECTION 3: per km²
+// ③ PER KM² & BUILDINGS
 (function(){
   const hhR=BL.find(r=>r.Bundesland==='Hamburg');
   const deKm2=(4509309/357114).toFixed(1);
   document.getElementById('k-hh-km2').textContent=hhR?hhR.per_km2.toFixed(1):'—';
   document.getElementById('k-de-km2').textContent=deKm2;
-  const rank=BL.findIndex(r=>r.Bundesland==='Hamburg')+1;
-  document.getElementById('k-hh-rank').textContent='#'+rank;
-  document.getElementById('k-hh-factor').textContent=hhR?(hhR.per_km2/parseFloat(deKm2)).toFixed(1)+'×':'—';
+  const rankKm2=[...BL].filter(r=>r.per_km2).sort((a,b)=>b.per_km2-a.per_km2).findIndex(r=>r.Bundesland==='Hamburg')+1;
+  document.getElementById('k-hh-km2-rank').textContent=rankKm2;
 })();
 
-const blSorted=[...BL].sort((a,b)=>b.per_km2-a.per_km2);
-ch('c-bl-km2',{type:'bar',data:{labels:blSorted.map(r=>r.Bundesland),datasets:[{label:'per km²',
-  data:blSorted.map(r=>r.per_km2),backgroundColor:blSorted.map(r=>r.Bundesland==='Hamburg'?HH:DE+'99'),borderRadius:3}]},
-  options:{responsive:true,maintainAspectRatio:false,animation:false,indexAxis:'y',
-    plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+const blKm2=[...BL].filter(r=>r.per_km2).sort((a,b)=>b.per_km2-a.per_km2);
+ch('c-bl-km2',{type:'bar',data:{labels:blKm2.map(r=>r.Bundesland),datasets:[{label:'per km²',data:blKm2.map(r=>r.per_km2),
+  backgroundColor:blKm2.map(r=>r.Bundesland==='Hamburg'?HH:DE+'99'),borderRadius:3}]},
+  options:{...sharedOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
 
-ch('c-perkm2',{type:'line',data:{labels:MONTHS,datasets:[
-  {label:'Hamburg',data:HH_KM2,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:0,fill:false},
-  {label:'Germany',data:NAT_KM2,borderColor:DE,borderWidth:1.5,tension:.3,pointRadius:0,fill:false,borderDash:[5,3]}
-]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-  interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},
-  scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/km²'}}}}});
+const blBldg=[...BL].filter(r=>r.per_building).sort((a,b)=>b.per_building-a.per_building);
+ch('c-bl-bldg',{type:'bar',data:{labels:blBldg.map(r=>r.Bundesland),datasets:[{label:'per 1k bldgs',data:blBldg.map(r=>r.per_building),
+  backgroundColor:blBldg.map(r=>r.Bundesland==='Hamburg'?HH:DE+'99'),borderRadius:3}]},
+  options:{...sharedOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
 
-// Bundesland table
+ch('c-per-bldg',{type:'line',data:{labels:MONTHS,datasets:[
+  {label:'Hamburg',data:HH_BLDG,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:0,fill:false},
+  {label:'Germany',data:NAT_BLDG,borderColor:DE,borderWidth:1.5,tension:.3,pointRadius:0,fill:false,borderDash:[5,3]}
+]},options:{...sharedOpts,plugins:{legend:{display:false}},
+  scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/1k bldgs'}}}}});
+
+// Full state ranking table
 (function(){
+  const rows=[...BL].filter(r=>r.per_building).sort((a,b)=>b.per_building-a.per_building);
   const tbl=document.getElementById('bl-table');
-  const rows=[...BL].sort((a,b)=>b.per_km2-a.per_km2);
-  let h='<thead><tr><th>#</th><th>State</th><th class="num">Total systems</th><th class="num">Per 100k pop.</th><th class="num">Per km²</th></tr></thead><tbody>';
+  let h='<thead><tr><th>#</th><th>State</th><th class="num">Total</th><th class="num">Per 100k pop.</th><th class="num">Per km²</th><th class="num">Per 1k buildings</th><th class="num">Buildings (Zensus)</th></tr></thead><tbody>';
   rows.forEach((r,i)=>{
-    const cls=r.Bundesland==='Hamburg'?' class="highlight"':'';
-    h+=`<tr${cls}><td>${i+1}</td><td>${r.Bundesland}</td><td class="num">${fmt(r.count)}</td><td class="num">${r.per_100k}</td><td class="num">${r.per_km2}</td></tr>`;
+    const cls=r.Bundesland==='Hamburg'?' class="hl"':'';
+    h+=`<tr><td${cls}>${i+1}</td><td${cls}>${r.Bundesland}${r.Bundesland==='Hamburg'?' ◄':''}</td><td class="num"${cls}>${fmt(r.count)}</td><td class="num"${cls}>${r.per_100k}</td><td class="num"${cls}>${r.per_km2}</td><td class="num"${cls}>${r.per_building}</td><td class="num"${cls}>${fmt(r.buildings)}</td></tr>`;
   });
   tbl.innerHTML=h+'</tbody>';
 })();
 
-// ── SECTION 4: Index
+// ④ INDEX
 (function(){
-  function findIdx(arr,yr){const r=arr.find(x=>x.year===yr);return r?r.idx:null;}
-  document.getElementById('k-idx-hh23').textContent=(findIdx(IDX_HH,2023)||'—');
-  document.getElementById('k-idx-de23').textContent=(findIdx(IDX_NAT,2023)||'—');
-  document.getElementById('k-idx-hh24').textContent=(findIdx(IDX_HH,2024)||'—');
-  document.getElementById('k-idx-de24').textContent=(findIdx(IDX_NAT,2024)||'—');
+  function fi(arr,yr){const r=arr.find(x=>x.year===yr);return r?r.idx:null;}
+  document.getElementById('k-idx-hh23').textContent=fi(IDX_HH,2023)||'—';
+  document.getElementById('k-idx-de23').textContent=fi(IDX_NAT,2023)||'—';
+  document.getElementById('k-idx-hh24').textContent=fi(IDX_HH,2024)||'—';
+  document.getElementById('k-idx-de24').textContent=fi(IDX_NAT,2024)||'—';
 })();
 
 ch('c-index',{type:'line',data:{labels:IDX_NAT.map(r=>r.year),datasets:[
-  {label:'Hamburg',data:IDX_HH.map(r=>r.idx),borderColor:HH,backgroundColor:HH+'22',borderWidth:2.5,tension:.3,pointRadius:4,fill:false},
-  {label:'Germany',data:IDX_NAT.map(r=>r.idx),borderColor:DE,backgroundColor:DE+'22',borderWidth:2,tension:.3,pointRadius:4,fill:false,borderDash:[5,3]}
-]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-  interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},
-  scales:{x:{grid:{display:false}},y:{beginAtZero:false,ticks:{callback:v=>v}}}}});
+  {label:'Hamburg',data:IDX_HH.map(r=>r.idx),borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:4,fill:false},
+  {label:'Germany',data:IDX_NAT.map(r=>r.idx),borderColor:DE,borderWidth:2,tension:.3,pointRadius:4,fill:false,borderDash:[5,3]}
+]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{beginAtZero:false}}}});
 
-// YoY growth
-function yoy(arr){return arr.map((r,i)=>i===0?0:+(((r.count/arr[i-1].count)-1)*100).toFixed(1));}
-const yoyHH=yoy(ANN_HH.filter(r=>r.year>=2015));
-const yoyDE=yoy(ANN_NAT.filter(r=>r.year>=2015));
+function yoyArr(arr){return arr.map((r,i)=>i===0?0:+(((r.count/arr[i-1].count)-1)*100).toFixed(1));}
+const yoyHH=yoyArr(ANN_HH.filter(r=>r.year>=2015)),yoyDE=yoyArr(ANN_NAT.filter(r=>r.year>=2015));
 ch('c-yoy',{type:'line',data:{labels:ANN_NAT.filter(r=>r.year>=2015).map(r=>r.year),datasets:[
-  {label:'Hamburg',data:yoyHH,borderColor:HH,borderWidth:2,tension:.2,pointRadius:4,fill:false},
-  {label:'Germany',data:yoyDE,borderColor:DE,borderWidth:2,tension:.2,pointRadius:4,fill:false,borderDash:[5,3]}
-]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-  plugins:{legend:{position:'top',labels:{usePointStyle:true}}},
-  scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>(v>0?'+':'')+v+'%'}}}}});
+  {label:'Hamburg',data:yoyHH,borderColor:HH,borderWidth:2,tension:.2,pointRadius:4},
+  {label:'Germany',data:yoyDE,borderColor:DE,borderWidth:2,tension:.2,pointRadius:4,borderDash:[5,3]}
+]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>(v>0?'+':'')+v+'%'}}}}});
 
-// Cumulative index
 (function(){
-  let cumHH=0,cumDE=0;
-  const baseHH=ANN_HH.find(r=>r.year===2019)?.count||1;
-  const baseDE=ANN_NAT.find(r=>r.year===2019)?.count||1;
-  const years=ANN_NAT.filter(r=>r.year>=2019).map(r=>r.year);
-  const cHH=[],cDE=[];
-  years.forEach(yr=>{
-    const h=ANN_HH.find(r=>r.year===yr)?.count||0;
-    const d=ANN_NAT.find(r=>r.year===yr)?.count||0;
-    cumHH+=h;cumDE+=d;
-    cHH.push(+(cumHH/baseHH*100).toFixed(1));
-    cDE.push(+(cumDE/baseDE*100).toFixed(1));
-  });
+  let cHH=0,cDE=0;
+  const baseHH=ANN_HH.find(r=>r.year===2019)?.count||1,baseDE=ANN_NAT.find(r=>r.year===2019)?.count||1;
+  const years=ANN_NAT.filter(r=>r.year>=2019).map(r=>r.year),ccHH=[],ccDE=[];
+  years.forEach(yr=>{cHH+=(ANN_HH.find(r=>r.year===yr)?.count||0);cDE+=(ANN_NAT.find(r=>r.year===yr)?.count||0);ccHH.push(+(cHH/baseHH*100).toFixed(1));ccDE.push(+(cDE/baseDE*100).toFixed(1));});
   ch('c-cumul',{type:'line',data:{labels:years,datasets:[
-    {label:'Hamburg',data:cHH,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:4,fill:false},
-    {label:'Germany',data:cDE,borderColor:DE,borderWidth:2,tension:.3,pointRadius:4,fill:false,borderDash:[5,3]}
-  ]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-    plugins:{legend:{position:'top',labels:{usePointStyle:true}}},
-    scales:{x:{grid:{display:false}},y:{beginAtZero:false,ticks:{callback:v=>v}}}}});
+    {label:'Hamburg',data:ccHH,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:4},
+    {label:'Germany',data:ccDE,borderColor:DE,borderWidth:2,tension:.3,pointRadius:4,borderDash:[5,3]}
+  ]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{beginAtZero:false}}}});
 })();
 
-// ── SECTION 5: Types
+// ⑤ TYPES
 ch('c-priv',{type:'line',data:{labels:PRIV_NAT.filter(r=>r.year>=2015).map(r=>r.year),datasets:[
   {label:'Hamburg',data:PRIV_HH.filter(r=>r.year>=2015).map(r=>r.priv_pct),borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:4},
   {label:'Germany',data:PRIV_NAT.filter(r=>r.year>=2015).map(r=>r.priv_pct),borderColor:DE,borderWidth:2,tension:.3,pointRadius:4,borderDash:[5,3]}
-]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-  plugins:{legend:{position:'top',labels:{usePointStyle:true}}},
-  scales:{x:{grid:{display:false}},y:{min:70,max:100,ticks:{callback:v=>v+'%'}}}}});
+]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{min:70,max:100,ticks:{callback:v=>v+'%'}}}}});
 
-// Size comparison bar
-const cats=['Small (≤10 kW)','Medium (10–100 kW)','Large (100–1000 kW)','Utility (>1 MW)'];
-const catCols=[HH+'CC',GRN+'CC',AMB+'CC',PUR+'CC'];
-function avgPct(arr,key){const v=arr.map(r=>r[key]||0);return +(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1);}
+function avgP(arr,k){const v=arr.map(r=>r[k]||0);return +(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1);}
 ch('c-size-cmp',{type:'bar',data:{
-  labels:['Small (≤10kW)','Medium (10–100kW)','Large (0.1–1MW)','Utility (>1MW)'],
+  labels:['Small ≤10kW','Med 10–100kW','Large 0.1–1MW','Utility >1MW'],
   datasets:[
-    {label:'Hamburg',data:['small_pct','med_pct','large_pct','util_pct'].map(k=>avgPct(TYPE_HH,k)),backgroundColor:HH+'CC',borderRadius:3},
-    {label:'Germany',data:['small_pct','med_pct','large_pct','util_pct'].map(k=>avgPct(TYPE_NAT,k)),backgroundColor:DE+'99',borderRadius:3}
-  ]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-    plugins:{legend:{position:'top',labels:{usePointStyle:true}}},
-    scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}}}});
+    {label:'Hamburg',data:['small_pct','med_pct','large_pct','util_pct'].map(k=>avgP(TYPE_HH,k)),backgroundColor:HH+'CC',borderRadius:3},
+    {label:'Germany',data:['small_pct','med_pct','large_pct','util_pct'].map(k=>avgP(TYPE_NAT,k)),backgroundColor:DE+'99',borderRadius:3}
+  ]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}}}});
 
-function stackedSizeChart(id,typeArr,col){
-  const filtered=typeArr.filter(r=>r.year>=2015);
-  ch(id,{type:'bar',data:{labels:filtered.map(r=>r.year),datasets:[
-    {label:'Small ≤10kW',data:filtered.map(r=>r.small_pct),backgroundColor:HH+'CC',stack:'s'},
-    {label:'Medium 10–100kW',data:filtered.map(r=>r.med_pct),backgroundColor:GRN+'CC',stack:'s'},
-    {label:'Large 0.1–1MW',data:filtered.map(r=>r.large_pct),backgroundColor:AMB+'CC',stack:'s'},
-    {label:'Utility >1MW',data:filtered.map(r=>r.util_pct),backgroundColor:PUR+'CC',stack:'s'},
-  ]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-    interaction:{mode:'index',intersect:false},
-    plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:10,font:{size:10}}}},
+function stackedSize(id,arr){
+  const f=arr.filter(r=>r.year>=2015);
+  ch(id,{type:'bar',data:{labels:f.map(r=>r.year),datasets:[
+    {label:'Small ≤10kW',data:f.map(r=>r.small_pct),backgroundColor:HH+'CC',stack:'s'},
+    {label:'Med 10–100kW',data:f.map(r=>r.med_pct),backgroundColor:GRN+'CC',stack:'s'},
+    {label:'Large 0.1–1MW',data:f.map(r=>r.large_pct),backgroundColor:AMB+'CC',stack:'s'},
+    {label:'Utility >1MW',data:f.map(r=>r.util_pct),backgroundColor:PUR+'CC',stack:'s'},
+  ]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:10,font:{size:10}}}},
     scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,max:100,ticks:{callback:v=>v+'%'}}}}});
 }
-stackedSizeChart('c-size-hh',TYPE_HH,HH);
-stackedSizeChart('c-size-de',TYPE_NAT,DE);
+stackedSize('c-size-hh',TYPE_HH); stackedSize('c-size-de',TYPE_NAT);
 
-// ── SECTION 6: Post-2023
+// ⑥ POST-2023
+(function(){
+  const preCount=6123,postCount=11606;
+  const preRate=+(preCount/4/260730*1000).toFixed(1);
+  const postRate=+(postCount/2/260730*1000).toFixed(1);
+  document.getElementById('k-bldg-pre').textContent=preRate;
+  document.getElementById('k-bldg-post').textContent=postRate;
+})();
+
 ch('c-post23-monthly',{type:'line',data:{labels:MONTHS_POST,datasets:[
-  {label:'Hamburg',data:HH_100K_POST,borderColor:HH,backgroundColor:HH+'22',borderWidth:2.5,tension:.3,pointRadius:3,fill:false},
+  {label:'Hamburg',data:HH_100K_POST,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:3,fill:false},
   {label:'Germany',data:NAT_100K_POST,borderColor:DE,borderWidth:1.5,tension:.3,pointRadius:3,fill:false,borderDash:[5,3]}
-]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-  interaction:{mode:'index',intersect:false},plugins:{legend:{display:false}},
-  scales:{x:{grid:{display:false},ticks:{maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/100k'}}}}});
+]},options:{...sharedOpts,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/100k'}}}}});
 
-// Pre vs post private share
-ch('c-post23-priv',{type:'bar',data:{
-  labels:['Pre-2023','Post-2023'],
-  datasets:[
-    {label:'Hamburg',data:[82.6,90.2],backgroundColor:HH+'CC',borderRadius:3},
-    {label:'Germany',data:[88.4,93.8],backgroundColor:DE+'99',borderRadius:3}
-  ]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-    plugins:{legend:{position:'top',labels:{usePointStyle:true}}},
-    scales:{x:{grid:{display:false}},y:{min:75,max:100,ticks:{callback:v=>v+'%'}}}}});
+ch('c-post23-bldg',{type:'line',data:{labels:MONTHS_POST,datasets:[
+  {label:'Hamburg',data:HH_BLDG_POST,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:3,fill:false},
+  {label:'Germany',data:NAT_BLDG_POST,borderColor:DE,borderWidth:1.5,tension:.3,pointRadius:3,fill:false,borderDash:[5,3]}
+]},options:{...sharedOpts,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/1k bldgs'}}}}});
 
-// Pre vs post size
+ch('c-post23-priv',{type:'bar',data:{labels:['Pre-2023','Post-2023'],datasets:[
+  {label:'Hamburg',data:[82.6,90.2],backgroundColor:HH+'CC',borderRadius:3},
+  {label:'Germany',data:[88.4,93.8],backgroundColor:DE+'99',borderRadius:3}
+]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{min:75,max:100,ticks:{callback:v=>v+'%'}}}}});
+
 ch('c-post23-size',{type:'bar',data:{
   labels:['Small ≤10kW','Med 10–100kW','Large 0.1–1MW','Utility >1MW'],
   datasets:[
-    {label:'HH pre-2023',data:[avgPct(TYPE_HH.filter(r=>r.year<2023),'small_pct'),avgPct(TYPE_HH.filter(r=>r.year<2023),'med_pct'),avgPct(TYPE_HH.filter(r=>r.year<2023),'large_pct'),avgPct(TYPE_HH.filter(r=>r.year<2023),'util_pct')],backgroundColor:HH+'88',borderRadius:3},
-    {label:'HH post-2023',data:[avgPct(TYPE_HH.filter(r=>r.year>=2023),'small_pct'),avgPct(TYPE_HH.filter(r=>r.year>=2023),'med_pct'),avgPct(TYPE_HH.filter(r=>r.year>=2023),'large_pct'),avgPct(TYPE_HH.filter(r=>r.year>=2023),'util_pct')],backgroundColor:HH+'CC',borderRadius:3},
-    {label:'DE post-2023',data:[avgPct(TYPE_NAT.filter(r=>r.year>=2023),'small_pct'),avgPct(TYPE_NAT.filter(r=>r.year>=2023),'med_pct'),avgPct(TYPE_NAT.filter(r=>r.year>=2023),'large_pct'),avgPct(TYPE_NAT.filter(r=>r.year>=2023),'util_pct')],backgroundColor:DE+'99',borderRadius:3},
-  ]},options:{responsive:true,maintainAspectRatio:false,animation:false,
-    plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}}},
-    scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}}}});
+    {label:'HH pre-2023',data:['small_pct','med_pct','large_pct','util_pct'].map(k=>avgP(TYPE_HH.filter(r=>r.year<2023),k)),backgroundColor:HH+'66',borderRadius:3},
+    {label:'HH post-2023',data:['small_pct','med_pct','large_pct','util_pct'].map(k=>avgP(TYPE_HH.filter(r=>r.year>=2023),k)),backgroundColor:HH+'CC',borderRadius:3},
+    {label:'DE post-2023',data:['small_pct','med_pct','large_pct','util_pct'].map(k=>avgP(TYPE_NAT.filter(r=>r.year>=2023),k)),backgroundColor:DE+'99',borderRadius:3},
+  ]},options:{...sharedOpts,plugins:{legend:{position:'top',labels:{usePointStyle:true,font:{size:10}}}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}}}});
 
-// Section nav
 function showSec(i){
   document.querySelectorAll('.section').forEach((s,j)=>s.classList.toggle('active',j===i));
   document.querySelectorAll('.snav-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
