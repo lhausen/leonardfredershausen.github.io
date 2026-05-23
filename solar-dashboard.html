@@ -279,15 +279,7 @@ ch('c-reldiff',{type:'bar',data:{labels:MONTHS,datasets:[{label:'HH vs DE (%)',d
   document.getElementById('k-de-24').textContent=de24.toFixed(0);
 })();
 
-// ③ PER KM² & BUILDINGS
-(function(){
-  const hhR=BL.find(r=>r.Bundesland==='Hamburg');
-  const deKm2=(4509309/357114).toFixed(1);
-  document.getElementById('k-hh-km2').textContent=hhR?hhR.per_km2.toFixed(1):'—';
-  document.getElementById('k-de-km2').textContent=deKm2;
-  const rankKm2=[...BL].filter(r=>r.per_km2).sort((a,b)=>b.per_km2-a.per_km2).findIndex(r=>r.Bundesland==='Hamburg')+1;
-  document.getElementById('k-hh-km2-rank').textContent=rankKm2;
-})();
+// ③ PER KM² & BUILDINGS — (per-km² KPIs moved to bar charts; no standalone DOM targets)
 
 const blKm2=[...BL].filter(r=>r.per_km2).sort((a,b)=>b.per_km2-a.per_km2);
 ch('c-bl-km2',{type:'bar',data:{labels:blKm2.map(r=>r.Bundesland),datasets:[{label:'per km²',data:blKm2.map(r=>r.per_km2),
