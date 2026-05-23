@@ -120,14 +120,14 @@ canvas{max-height:260px}
   <div class="sec-hdr"><h2>③ Controlling for Geographic Size &amp; Building Stock</h2>
     <p>Per km² · per 1,000 buildings (Zensus 2022) · state rankings on all metrics</p></div>
   <div class="insight">
-    💡 <strong>Key finding:</strong> When controlling for <strong>building stock</strong>, Hamburg ranks <strong>15th of 16 states</strong> (68 systems per 1,000 buildings vs. national avg 225). Hamburg's dense apartment stock — where rooftop solar is structurally harder — explains the gap, and is a critical confound the mandate must overcome.
+    💡 <strong>Fairest comparison — controlling for both size and density:</strong> Hamburg has ~345 buildings/km², far above the national average. Dense cities structurally have fewer solar panels per building because apartment rooftops serve many households. The scatter chart below plots all 16 states on building density vs. solar penetration with an OLS trend line — states <em>above</em> the line outperform their density-expected rate; states <em>below</em> underperform. <span id="density-insight-text">Loading…</span>
   </div>
   <div class="kpi-row">
     <div class="kpi hh"><div class="kpi-lbl">HH per km²</div><div class="kpi-val" id="k-hh-km2">—</div><div class="kpi-sub">rank #<span id="k-hh-km2-rank">—</span> of 16</div></div>
     <div class="kpi de"><div class="kpi-lbl">DE avg per km²</div><div class="kpi-val" id="k-de-km2">—</div><div class="kpi-sub">national average</div></div>
     <div class="kpi hh"><div class="kpi-lbl">HH per 1,000 buildings</div><div class="kpi-val">68.0</div><div class="kpi-sub">rank #15 of 16</div></div>
-    <div class="kpi de"><div class="kpi-lbl">DE per 1,000 buildings</div><div class="kpi-val">225.5</div><div class="kpi-sub">national average</div></div>
-    <div class="kpi red"><div class="kpi-lbl">HH penetration gap</div><div class="kpi-val">−70%</div><div class="kpi-sub">vs national building rate</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH density-expected</div><div class="kpi-val" id="k-hh-expected">—</div><div class="kpi-sub">per 1k bldgs given density</div></div>
+    <div class="kpi" id="k-hh-resid-card"><div class="kpi-lbl">HH vs density-expected</div><div class="kpi-val" id="k-hh-resid">—</div><div class="kpi-sub">outperform (+) or underperform (−)</div></div>
   </div>
   <div class="g2">
     <div class="card">
@@ -138,6 +138,12 @@ canvas{max-height:260px}
       <h3>Bundesländer — Installations per 1,000 Buildings</h3><p class="csub">Zensus 2022 building stock · sorted desc</p>
       <canvas id="c-bl-bldg"></canvas>
     </div>
+  </div>
+  <div class="g-full card">
+    <h3>Building Density vs Solar Penetration — All 16 States</h3>
+    <p class="csub">X: buildings per km² (urban density) · Y: installations per 1,000 buildings · OLS log-log trend line · Hamburg in blue</p>
+    <canvas id="c-density-scatter" style="max-height:340px"></canvas>
+    <p class="mandate" style="margin-top:8px">📍 Above trend line = outperforms density expectation &nbsp;·&nbsp; Below = underperforms &nbsp;·&nbsp; Dashed line = OLS fit across all 16 states</p>
   </div>
   <div class="g-full card">
     <h3>Monthly per 1,000 Buildings — Hamburg vs Germany</h3>
@@ -293,20 +299,107 @@ ch('c-bl-bldg',{type:'bar',data:{labels:blBldg.map(r=>r.Bundesland),datasets:[{l
   backgroundColor:blBldg.map(r=>r.Bundesland==='Hamburg'?HH:DE+'99'),borderRadius:3}]},
   options:{...sharedOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
 
+// Density scatter plot + OLS (log-log)
+(function(){
+  // Enrich BL with building density
+  const blD=BL.map(r=>({...r,bldg_km2:r.buildings/r.area}));
+  // Log-log OLS: ln(per_building) ~ ln(bldg_km2)
+  const lx=blD.map(r=>Math.log(r.bldg_km2));
+  const ly=blD.map(r=>Math.log(r.per_building));
+  const n=lx.length;
+  const sx=lx.reduce((a,b)=>a+b,0),sy=ly.reduce((a,b)=>a+b,0);
+  const sxy=lx.reduce((a,b,i)=>a+b*ly[i],0),sx2=lx.reduce((a,b)=>a+b*b,0);
+  const slope=(n*sxy-sx*sy)/(n*sx2-sx*sx);
+  const intercept=(sy-slope*sx)/n;
+  // expected(x) = exp(intercept) * x^slope
+  function expected(x){return Math.exp(intercept)*Math.pow(x,slope);}
+
+  // Hamburg density-adjusted insight
+  const hhR=blD.find(r=>r.Bundesland==='Hamburg');
+  const hhExp=expected(hhR.bldg_km2);
+  const hhResidPct=((hhR.per_building/hhExp-1)*100);
+  document.getElementById('k-hh-expected').textContent=hhExp.toFixed(1);
+  const residEl=document.getElementById('k-hh-resid');
+  const residCard=document.getElementById('k-hh-resid-card');
+  residEl.textContent=(hhResidPct>=0?'+':'')+hhResidPct.toFixed(1)+'%';
+  residCard.classList.add(hhResidPct>=0?'grn':'red');
+
+  // Density-adjusted rank: rank by residual (actual/expected)
+  const ranked=[...blD].map(r=>({...r,ratio:r.per_building/expected(r.bldg_km2)})).sort((a,b)=>b.ratio-a.ratio);
+  const hhDaRank=ranked.findIndex(r=>r.Bundesland==='Hamburg')+1;
+  // Update insight text
+  const insightEl=document.getElementById('density-insight-text');
+  const compBerlin=blD.find(r=>r.Bundesland==='Berlin');
+  if(insightEl){
+    insightEl.innerHTML=`Hamburg's density-expected penetration is <strong>${hhExp.toFixed(0)}/1k buildings</strong> — its actual rate of <strong>68/1k</strong> puts it <strong>${hhResidPct>=0?'above':'below'} trend by ${Math.abs(hhResidPct).toFixed(1)} pp</strong>, ranking <strong>#${hhDaRank} of 16</strong> after density adjustment. Comparable Berlin (${compBerlin.bldg_km2.toFixed(0)} bldgs/km², ${compBerlin.per_building.toFixed(0)}/1k) provides the closest peer benchmark.`;
+  }
+
+  // Regression line (50 points across density range)
+  const xMin=Math.min(...blD.map(r=>r.bldg_km2))*0.9;
+  const xMax=Math.max(...blD.map(r=>r.bldg_km2))*1.1;
+  const regPts=Array.from({length:50},(_,i)=>{const x=xMin+i*(xMax-xMin)/49;return{x,y:expected(x)};});
+
+  // Scatter datasets: others vs Hamburg, city-states highlighted
+  const cityStates=['Hamburg','Berlin','Bremen'];
+  const others=blD.filter(r=>!cityStates.includes(r.Bundesland)).map(r=>({x:r.bldg_km2,y:r.per_building,label:r.Bundesland}));
+  const cities=blD.filter(r=>cityStates.includes(r.Bundesland)&&r.Bundesland!=='Hamburg').map(r=>({x:r.bldg_km2,y:r.per_building,label:r.Bundesland}));
+  const hhPt=[{x:hhR.bldg_km2,y:hhR.per_building,label:'Hamburg'}];
+
+  ch('c-density-scatter',{
+    type:'scatter',
+    data:{datasets:[
+      {label:'Other states',data:others,backgroundColor:DE+'88',pointRadius:6,pointHoverRadius:8},
+      {label:'City-states (Berlin, Bremen)',data:cities,backgroundColor:AMB+'CC',pointRadius:7,pointHoverRadius:9},
+      {label:'Hamburg',data:hhPt,backgroundColor:HH,pointRadius:10,pointHoverRadius:12},
+      {type:'line',label:'OLS trend (log-log)',data:regPts,borderColor:RED+'AA',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,tension:0}
+    ]},
+    options:{...sharedOpts,
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,padding:14}},
+        tooltip:{callbacks:{label:ctx=>{
+          const d=ctx.raw;
+          if(d.label)return`${d.label}: ${d.x.toFixed(0)} bldgs/km²,  ${d.y.toFixed(1)}/1k bldgs`;
+          return`OLS: ${ctx.parsed.y.toFixed(1)}/1k bldgs`;
+        }}}
+      },
+      scales:{
+        x:{type:'logarithmic',title:{display:true,text:'Building density (buildings per km², log scale)'},grid:{display:true},
+          ticks:{callback:v=>[10,20,50,100,200,400].includes(v)?v:''}},
+        y:{title:{display:true,text:'Solar penetration (per 1,000 buildings)'},beginAtZero:true}
+      }
+    }
+  });
+
+  // Annotation plugin not available — add after-draw label manually via plugin
+  // (simple approach: nothing extra needed, hover tooltip names each state)
+})();
+
 ch('c-per-bldg',{type:'line',data:{labels:MONTHS,datasets:[
   {label:'Hamburg',data:HH_BLDG,borderColor:HH,borderWidth:2.5,tension:.3,pointRadius:0,fill:false},
   {label:'Germany',data:NAT_BLDG,borderColor:DE,borderWidth:1.5,tension:.3,pointRadius:0,fill:false,borderDash:[5,3]}
 ]},options:{...sharedOpts,plugins:{legend:{display:false}},
   scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/1k bldgs'}}}}});
 
-// Full state ranking table
+// Full state ranking table — sorted by density-adjusted ratio
 (function(){
-  const rows=[...BL].filter(r=>r.per_building).sort((a,b)=>b.per_building-a.per_building);
+  const blD=BL.map(r=>({...r,bldg_km2:+(r.buildings/r.area).toFixed(0)}));
+  // Recompute OLS for density-adjusted ratio column
+  const lx=blD.map(r=>Math.log(r.bldg_km2));
+  const ly=blD.map(r=>Math.log(r.per_building));
+  const n=lx.length;
+  const sx=lx.reduce((a,b)=>a+b,0),sy=ly.reduce((a,b)=>a+b,0);
+  const sxy=lx.reduce((a,b,i)=>a+b*ly[i],0),sx2=lx.reduce((a,b)=>a+b*b,0);
+  const slope=(n*sxy-sx*sy)/(n*sx2-sx*sx);
+  const intercept=(sy-slope*sx)/n;
+  function exp_(x){return Math.exp(intercept)*Math.pow(x,slope);}
+  const rows=[...blD].map(r=>({...r,da_ratio:r.per_building/exp_(r.bldg_km2)})).sort((a,b)=>b.per_building-a.per_building);
   const tbl=document.getElementById('bl-table');
-  let h='<thead><tr><th>#</th><th>State</th><th class="num">Total</th><th class="num">Per 100k pop.</th><th class="num">Per km²</th><th class="num">Per 1k buildings</th><th class="num">Buildings (Zensus)</th></tr></thead><tbody>';
+  let h='<thead><tr><th>#</th><th>State</th><th class="num">Total</th><th class="num">Per km²</th><th class="num">Per 1k bldgs</th><th class="num">Bldgs/km²</th><th class="num">Density-adjusted</th><th class="num">Buildings</th></tr></thead><tbody>';
   rows.forEach((r,i)=>{
     const cls=r.Bundesland==='Hamburg'?' class="hl"':'';
-    h+=`<tr><td${cls}>${i+1}</td><td${cls}>${r.Bundesland}${r.Bundesland==='Hamburg'?' ◄':''}</td><td class="num"${cls}>${fmt(r.count)}</td><td class="num"${cls}>${r.per_100k}</td><td class="num"${cls}>${r.per_km2}</td><td class="num"${cls}>${r.per_building}</td><td class="num"${cls}>${fmt(r.buildings)}</td></tr>`;
+    const daSign=r.da_ratio>=1?'+':'';
+    const daPct=daSign+((r.da_ratio-1)*100).toFixed(1)+'%';
+    const daColor=r.da_ratio>=1?'color:#10b981':'color:#ef4444';
+    h+=`<tr><td${cls}>${i+1}</td><td${cls}>${r.Bundesland}${r.Bundesland==='Hamburg'?' ◄':''}</td><td class="num"${cls}>${fmt(r.count)}</td><td class="num"${cls}>${r.per_km2}</td><td class="num"${cls}>${r.per_building}</td><td class="num"${cls}>${r.bldg_km2}</td><td class="num"${cls} style="${daColor}">${daPct}</td><td class="num"${cls}>${fmt(r.buildings)}</td></tr>`;
   });
   tbl.innerHTML=h+'</tbody>';
 })();
