@@ -164,7 +164,7 @@
   </div>
   <div id="legend-growth" class="map-legend" style="display:none">
     <span>Lower growth</span>
-    <div class="legend-bar" style="background:linear-gradient(to right,#f0fdf4,#86efac,#22c55e)"></div>
+    <div class="legend-bar" style="background:linear-gradient(to right,#bbf7d0,#22c55e)"></div>
     <span>Higher growth</span>
     <span style="margin-left:1rem;color:var(--muted-light)">2019–2022 → 2023–2025</span>
   </div>
@@ -253,9 +253,9 @@ function blueColor(val,max){
 
 function growthColor(pct){
   if(pct===null||pct===undefined) return'#f1f5f9';
-  // Sequential: near-white (#f0fdf4) → bright green (#22c55e)
+  // Sequential: light mint (#bbf7d0) → bright green (#22c55e)
   const t=Math.sqrt(Math.max(0,Math.min(1,(pct-150)/400)));
-  const r=Math.round(240-206*t),g=Math.round(253-56*t),b=Math.round(244-150*t);
+  const r=Math.round(187-153*t),g=Math.round(247-50*t),b=Math.round(208-114*t);
   return`rgb(${r},${g},${b})`;
 }
 
