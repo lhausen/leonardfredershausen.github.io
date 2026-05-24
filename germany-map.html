@@ -164,7 +164,7 @@
   </div>
   <div id="legend-growth" class="map-legend" style="display:none">
     <span>Lower growth</span>
-    <div class="legend-bar" style="background:linear-gradient(to right,#fef9c3,#86efac,#22c55e)"></div>
+    <div class="legend-bar" style="background:linear-gradient(to right,#f0fdf4,#4ade80,#16a34a)"></div>
     <span>Higher growth</span>
     <span style="margin-left:1rem;color:var(--muted-light)">2019–2022 → 2023–2025</span>
   </div>
@@ -255,9 +255,9 @@ function blueColor(val,max){
 
 function growthColor(pct){
   if(pct===null||pct===undefined) return'#f1f5f9';
-  // Yellow (#fef9c3) → bright green (#22c55e), stretched across actual data range
-  const t=Math.max(0,Math.min(1,(pct-GROWTH_MIN)/(GROWTH_MAX-GROWTH_MIN)));
-  const r=Math.round(254-220*t),g=Math.round(249-52*t),b=Math.round(195-101*t);
+  // Near-white (#f0fdf4) → vibrant green (#16a34a), sqrt gamma across actual data range
+  const t=Math.sqrt(Math.max(0,Math.min(1,(pct-GROWTH_MIN)/(GROWTH_MAX-GROWTH_MIN))));
+  const r=Math.round(240-218*t),g=Math.round(253-90*t),b=Math.round(244-170*t);
   return`rgb(${r},${g},${b})`;
 }
 
