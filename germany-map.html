@@ -164,7 +164,7 @@
   </div>
   <div id="legend-growth" class="map-legend" style="display:none">
     <span>Lower growth</span>
-    <div class="legend-bar" style="background:linear-gradient(to right,#bbf7d0,#22c55e)"></div>
+    <div class="legend-bar" style="background:linear-gradient(to right,#fef9c3,#86efac,#22c55e)"></div>
     <span>Higher growth</span>
     <span style="margin-left:1rem;color:var(--muted-light)">2019–2022 → 2023–2025</span>
   </div>
@@ -237,8 +237,10 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png
 }).addTo(map);
 
 // ── Color helpers ─────────────────────────────────────────────────────────────
-const POST_MAX = Math.max(...Object.values(INSTALL).map(d=>d.post_annual_100k));
-const PRE_MAX  = POST_MAX; // same scale for fair pre/post comparison
+const POST_MAX    = Math.max(...Object.values(INSTALL).map(d=>d.post_annual_100k));
+const PRE_MAX     = POST_MAX;
+const GROWTH_MIN  = Math.min(...Object.values(INSTALL).map(d=>d.growth_pct));
+const GROWTH_MAX  = Math.max(...Object.values(INSTALL).map(d=>d.growth_pct));
 
 function blueColor(val,max){
   if(!val||val<=0) return'#f1f5f9';
@@ -253,9 +255,9 @@ function blueColor(val,max){
 
 function growthColor(pct){
   if(pct===null||pct===undefined) return'#f1f5f9';
-  // Sequential: light mint (#bbf7d0) → bright green (#22c55e)
-  const t=Math.sqrt(Math.max(0,Math.min(1,(pct-150)/400)));
-  const r=Math.round(187-153*t),g=Math.round(247-50*t),b=Math.round(208-114*t);
+  // Yellow (#fef9c3) → bright green (#22c55e), stretched across actual data range
+  const t=Math.max(0,Math.min(1,(pct-GROWTH_MIN)/(GROWTH_MAX-GROWTH_MIN)));
+  const r=Math.round(254-220*t),g=Math.round(249-52*t),b=Math.round(195-101*t);
   return`rgb(${r},${g},${b})`;
 }
 
