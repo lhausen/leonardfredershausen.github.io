@@ -246,11 +246,11 @@ canvas{max-height:260px}
     💡 <strong>What this measures:</strong> Each year's new solar installations divided by that year's residential building completions, scaled to per 1,000 new buildings. Unlike the stock-based metrics in ③, this is a <em>flow rate</em>: how active solar adoption is relative to ongoing construction output. Note: solar includes <em>retrofits</em> on existing buildings, so the ratio can far exceed 1,000. Hamburg's small completions denominator (966 in 2024) amplifies the rate mechanically, making cross-state comparison sensitive to construction volume. Hamburg ranks <strong>#16</strong> — last — in this metric in both 2023 and 2024.
   </div>
   <div class="kpi-row">
-    <div class="kpi hh"><div class="kpi-lbl">HH rate · 2022 (pre-mandate)</div><div class="kpi-val">853</div><div class="kpi-sub">solar per 1k new bldgs</div></div>
+    <div class="kpi de"><div class="kpi-lbl">HH pre-mandate avg (2019–22)</div><div class="kpi-val">510</div><div class="kpi-sub">solar per 1k new bldgs</div></div>
+    <div class="kpi hh"><div class="kpi-lbl">HH post-mandate avg (2023–24)</div><div class="kpi-val">3,726</div><div class="kpi-sub">solar per 1k new bldgs</div></div>
+    <div class="kpi grn"><div class="kpi-lbl">HH mandate uplift</div><div class="kpi-val">7.3×</div><div class="kpi-sub">post avg ÷ pre avg</div></div>
     <div class="kpi hh"><div class="kpi-lbl">HH rate · 2023</div><div class="kpi-val">3,463</div><div class="kpi-sub">first mandate year</div></div>
-    <div class="kpi hh"><div class="kpi-lbl">HH rate · 2024</div><div class="kpi-val">3,989</div><div class="kpi-sub">solar per 1k new bldgs</div></div>
-    <div class="kpi grn"><div class="kpi-lbl">HH growth 2022→2023</div><div class="kpi-val">4.1×</div><div class="kpi-sub">new solar ÷ completions</div></div>
-    <div class="kpi red"><div class="kpi-lbl">HH rank · 2023 &amp; 2024</div><div class="kpi-val">#16 / 16</div><div class="kpi-sub">last — low completions denominator</div></div>
+    <div class="kpi red"><div class="kpi-lbl">HH rank · post-mandate</div><div class="kpi-val">#16 / 16</div><div class="kpi-sub">last — low completions denominator</div></div>
   </div>
   <div class="g-full card">
     <h3>All 16 States — New Solar per 1,000 Residential Building Completions (2015–2024)</h3>
@@ -258,17 +258,10 @@ canvas{max-height:260px}
     <canvas id="c-flow-multi" style="max-height:300px"></canvas>
     <p class="mandate">▲ Jan 2023: Hamburg private solar mandate</p>
   </div>
-  <div class="g2">
-    <div class="card">
-      <h3>State Ranking — 2023</h3>
-      <p class="csub">Solar per 1,000 new residential buildings · sorted desc · Hamburg highlighted</p>
-      <canvas id="c-flow-rank23" style="max-height:420px"></canvas>
-    </div>
-    <div class="card">
-      <h3>State Ranking — 2024</h3>
-      <p class="csub">Solar per 1,000 new residential buildings · sorted desc · Hamburg highlighted</p>
-      <canvas id="c-flow-rank24" style="max-height:420px"></canvas>
-    </div>
+  <div class="g-full card">
+    <h3>Pre-Mandate Average (2019–2022) vs Post-Mandate Average (2023–2024) — All 16 States</h3>
+    <p class="csub">Grouped horizontal bars · sorted by post-mandate avg desc · Hamburg bars in blue · post-mandate in darker shade · pre-mandate in lighter shade</p>
+    <canvas id="c-flow-prepost" style="max-height:540px"></canvas>
   </div>
   <div class="g2">
     <div class="card">
@@ -284,7 +277,7 @@ canvas{max-height:260px}
   </div>
   <div class="card">
     <h3>Full State Table — Annual Flow Rate (solar per 1,000 new residential buildings)</h3>
-    <p class="csub">Click any column to sort · Hamburg highlighted · Growth 22→23 captures mandate jump</p>
+    <p class="csub">Click any column to sort · Hamburg highlighted · Avg 2019–22 vs Avg 2023–24 compares pre- and post-mandate periods · Uplift = post ÷ pre</p>
     <div style="overflow-x:auto"><table class="cmp-table" id="flow-table"></table></div>
   </div>
 </div>
@@ -635,20 +628,30 @@ ch('c-post23-size',{type:'bar',data:{
       scales:{x:{grid:{display:false}},y:{beginAtZero:true,
         ticks:{callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}}}});
 
-  // Ranking bar charts
-  function rankChart(id,yr){
-    const yi=FLOW_YEARS.indexOf(yr);
-    const sorted=states.map(bl=>({bl,v:FLOW_PANEL[bl].per1k[yi]})).sort((a,b)=>b.v-a.v);
-    ch(id,{type:'bar',data:{labels:sorted.map(r=>r.bl),datasets:[{
-      label:'per 1k new bldgs',data:sorted.map(r=>r.v),
-      backgroundColor:sorted.map(r=>r.bl==='Hamburg'?HH:DE+'99'),borderRadius:3
-    }]},options:{...sharedOpts,indexAxis:'y',plugins:{legend:{display:false},
-      tooltip:{callbacks:{label:ctx=>`${Math.round(ctx.parsed.x).toLocaleString()} per 1k`}}},
+  // Pre-mandate (2019-22) vs Post-mandate (2023-24) grouped bar chart
+  (function(){
+    const preYrs=[2019,2020,2021,2022], postYrs=[2023,2024];
+    const avg=(bl,yrs)=>yrs.reduce((s,y)=>s+FLOW_PANEL[bl].per1k[FLOW_YEARS.indexOf(y)],0)/yrs.length;
+    const sorted=states.map(bl=>({bl,pre:Math.round(avg(bl,preYrs)),post:Math.round(avg(bl,postYrs))}))
+      .sort((a,b)=>b.post-a.post);
+    ch('c-flow-prepost',{type:'bar',data:{
+      labels:sorted.map(r=>r.bl),
+      datasets:[
+        {label:'Avg 2023–24 (post-mandate)',data:sorted.map(r=>r.post),
+          backgroundColor:sorted.map(r=>r.bl==='Hamburg'?HH+'DD':'#dc2626'+'66'),
+          borderColor:sorted.map(r=>r.bl==='Hamburg'?HH:'#dc2626'+'99'),
+          borderWidth:1,borderRadius:3},
+        {label:'Avg 2019–22 (pre-mandate)',data:sorted.map(r=>r.pre),
+          backgroundColor:sorted.map(r=>r.bl==='Hamburg'?HH+'55':DE+'66'),
+          borderColor:sorted.map(r=>r.bl==='Hamburg'?HH:DE),
+          borderWidth:1,borderRadius:3}
+      ]
+    },options:{...sharedOpts,indexAxis:'y',
+      plugins:{legend:{position:'top',labels:{usePointStyle:true}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.x.toLocaleString()} /1k bldgs`}}},
       scales:{x:{beginAtZero:true,ticks:{callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}},
         y:{grid:{display:false},ticks:{font:{size:10}}}}}});
-  }
-  rankChart('c-flow-rank23',2023);
-  rankChart('c-flow-rank24',2024);
+  })();
 
   // Hamburg dual axis: solar bars + completions line
   const hh=FLOW_PANEL['Hamburg'];
@@ -680,23 +683,27 @@ ch('c-post23-size',{type:'bar',data:{
     scales:{x:{grid:{display:false}},y:{beginAtZero:false,
       ticks:{callback:v=>v}}}}});
 
-  // Sortable table
+  // Sortable table — with pre/post averages and uplift
   (function(){
     const tblYears=[2019,2020,2021,2022,2023,2024];
-    const i22=FLOW_YEARS.indexOf(2022),i23=FLOW_YEARS.indexOf(2023);
+    const preYrs=[2019,2020,2021,2022], postYrs=[2023,2024];
+    const avgFn=(d,yrs)=>Math.round(yrs.reduce((s,y)=>s+d.per1k[FLOW_YEARS.indexOf(y)],0)/yrs.length);
     const tblData=states.map(bl=>{
       const d=FLOW_PANEL[bl];
-      const g=d.per1k[i22]>0?+(d.per1k[i23]/d.per1k[i22]).toFixed(2):null;
-      const obj={Bundesland:bl,growth:g};
+      const preAvg=avgFn(d,preYrs), postAvg=avgFn(d,postYrs);
+      const uplift=preAvg>0?+(postAvg/preAvg).toFixed(1):null;
+      const obj={Bundesland:bl,preAvg,postAvg,uplift};
       tblYears.forEach(yr=>{obj['y'+yr]=Math.round(d.per1k[FLOW_YEARS.indexOf(yr)]);});
       return obj;
     });
     const tbl=document.getElementById('flow-table');
-    let sortKey='y2023',sortDir=-1;
+    let sortKey='postAvg',sortDir=-1;
     const cols=[
       {key:'Bundesland',label:'State',num:false},
       ...tblYears.map(yr=>({key:'y'+yr,label:String(yr),num:true})),
-      {key:'growth',label:'Growth 22→23',num:true}
+      {key:'preAvg',label:'Avg 2019–22',num:true},
+      {key:'postAvg',label:'Avg 2023–24',num:true},
+      {key:'uplift',label:'Uplift ×',num:true}
     ];
     function render(){
       const rows=[...tblData].sort((a,b)=>{
@@ -718,9 +725,11 @@ ch('c-post23-size',{type:'bar',data:{
           const v=r['y'+yr];
           h+=`<td class="num"${cls}>${v!=null?v.toLocaleString():'—'}</td>`;
         });
-        const g=r.growth;
-        const gc=g&&g>=5?' style="color:var(--grn);font-weight:700"':g&&g>=3?' style="color:var(--amb);font-weight:600"':'';
-        h+=`<td class="num"${cls}${gc}>${g!=null?g.toFixed(1)+'×':'—'}</td></tr>`;
+        h+=`<td class="num"${cls}>${r.preAvg!=null?r.preAvg.toLocaleString():'—'}</td>`;
+        h+=`<td class="num"${cls}>${r.postAvg!=null?r.postAvg.toLocaleString():'—'}</td>`;
+        const u=r.uplift;
+        const uc=u&&u>=7?' style="color:var(--grn);font-weight:700"':u&&u>=4?' style="color:var(--amb);font-weight:600"':'';
+        h+=`<td class="num"${cls}${uc}>${u!=null?u.toFixed(1)+'×':'—'}</td></tr>`;
       });
       h+='</tbody>';
       tbl.innerHTML=h;
