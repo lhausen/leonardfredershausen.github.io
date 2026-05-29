@@ -154,7 +154,7 @@ canvas{max-height:260px}
   </div>
   <div class="card">
     <h3>Full State Ranking — All Normalisation Metrics</h3>
-    <p class="csub">Sorted by per 1,000 buildings · Hamburg highlighted</p>
+    <p class="csub">Click any column to sort · Hamburg highlighted</p>
     <table class="cmp-table" id="bl-table"></table>
   </div>
 </div>
@@ -397,7 +397,7 @@ ch('c-per-bldg',{type:'line',data:{labels:MONTHS,datasets:[
 ]},options:{...sharedOpts,plugins:{legend:{display:false}},
   scales:{x:{grid:{display:false},ticks:{maxTicksLimit:18,maxRotation:45}},y:{beginAtZero:true,ticks:{callback:v=>v+'/1k bldgs'}}}}});
 
-// Full state ranking table — bivariate-adjusted
+// Full state ranking table — sortable
 (function(){
   const blD=BL.map(r=>({...r,bldg_km2:r.buildings/r.area,ppb:r.pop/r.buildings}));
   // Recompute bivariate OLS (same as scatter block)
@@ -408,25 +408,66 @@ ch('c-per-bldg',{type:'line',data:{labels:MONTHS,datasets:[
   const s1y=x1c.reduce((a,b,i)=>a+b*yc[i],0),s2y=x2c.reduce((a,b,i)=>a+b*yc[i],0);
   const det=s11*s22-s12*s12,b1=(s1y*s22-s2y*s12)/det,b2=(s2y*s11-s1y*s12)/det,a0=my-b1*m1-b2*m2;
   function bivExp(r){return Math.exp(a0+b1*Math.log(r.bldg_km2)+b2*Math.log(r.ppb));}
-  const rows=[...blD].map(r=>({...r,bivAdj:(r.per_building/bivExp(r)-1)*100})).sort((a,b)=>b.per_building-a.per_building);
+  const allRows=blD.map(r=>({...r,bivAdj:(r.per_building/bivExp(r)-1)*100}));
+
   const tbl=document.getElementById('bl-table');
-  let h='<thead><tr><th>#</th><th>State</th><th class="num">Per 1k bldgs</th><th class="num">Bldgs/km²</th><th class="num">Persons/bldg</th><th class="num">Bivariate-adjusted</th><th class="num">Total</th></tr></thead><tbody>';
-  rows.forEach((r,i)=>{
-    const cls=r.Bundesland==='Hamburg'?' class="hl"':'';
-    const adjSign=r.bivAdj>=0?'+':'';
-    const adjPct=adjSign+r.bivAdj.toFixed(1)+'%';
-    const adjColor=r.bivAdj>=0?'color:#10b981;font-weight:700':'color:#ef4444;font-weight:700';
-    h+=`<tr>
-      <td${cls}>${i+1}</td>
-      <td${cls}>${r.Bundesland}${r.Bundesland==='Hamburg'?' ◄':''}</td>
-      <td class="num"${cls}>${r.per_building.toFixed(1)}</td>
-      <td class="num"${cls}>${r.bldg_km2.toFixed(0)}</td>
-      <td class="num"${cls}>${r.ppb.toFixed(1)}</td>
-      <td class="num"${cls} style="${adjColor}">${adjPct}</td>
-      <td class="num"${cls}>${fmt(r.count)}</td>
-    </tr>`;
-  });
-  tbl.innerHTML=h+'</tbody>';
+  let sortKey='per_building', sortDir=-1; // -1 = desc, +1 = asc
+
+  const cols=[
+    {key:'Bundesland', label:'State',             num:false},
+    {key:'per_building', label:'Per 1k bldgs',    num:true},
+    {key:'bldg_km2',   label:'Bldgs/km²',         num:true},
+    {key:'ppb',        label:'Persons/bldg',       num:true},
+    {key:'bivAdj',     label:'Bivariate-adjusted', num:true},
+    {key:'count',      label:'Total',              num:true},
+  ];
+
+  function render(){
+    const rows=[...allRows].sort((a,b)=>{
+      const va=a[sortKey], vb=b[sortKey];
+      return typeof va==='string' ? va.localeCompare(vb)*sortDir : (va-vb)*sortDir;
+    });
+
+    const thStyle=`cursor:pointer;user-select:none;white-space:nowrap`;
+    let h='<thead><tr><th style="'+thStyle+'" data-k="rank"># <span style="opacity:.4;font-size:.7em">↕</span></th>';
+    cols.forEach(c=>{
+      const active=sortKey===c.key;
+      const arrow=active?(sortDir===-1?'↓':'↑'):'↕';
+      const arrowOpacity=active?'1':'0.35';
+      h+=`<th class="${c.num?'num':''}" style="${thStyle}" data-k="${c.key}">${c.label} <span style="opacity:${arrowOpacity};font-size:.75em">${arrow}</span></th>`;
+    });
+    h+='</tr></thead><tbody>';
+
+    rows.forEach((r,i)=>{
+      const isHH=r.Bundesland==='Hamburg';
+      const cls=isHH?' class="hl"':'';
+      const adjSign=r.bivAdj>=0?'+':'';
+      const adjPct=adjSign+r.bivAdj.toFixed(1)+'%';
+      const adjColor=r.bivAdj>=0?'color:#10b981;font-weight:700':'color:#ef4444;font-weight:700';
+      h+=`<tr>
+        <td${cls}>${i+1}</td>
+        <td${cls}>${r.Bundesland}${isHH?' ◄':''}</td>
+        <td class="num"${cls}>${r.per_building.toFixed(1)}</td>
+        <td class="num"${cls}>${r.bldg_km2.toFixed(0)}</td>
+        <td class="num"${cls}>${r.ppb.toFixed(1)}</td>
+        <td class="num"${cls} style="${adjColor}">${adjPct}</td>
+        <td class="num"${cls}>${fmt(r.count)}</td>
+      </tr>`;
+    });
+    tbl.innerHTML=h+'</tbody>';
+
+    // Attach click handlers
+    tbl.querySelectorAll('thead th[data-k]').forEach(th=>{
+      th.addEventListener('click',()=>{
+        const k=th.dataset.k;
+        if(k==='rank') return; // rank col is just index, no independent sort
+        if(sortKey===k) sortDir*=-1; else {sortKey=k; sortDir=k==='Bundesland'?1:-1;}
+        render();
+      });
+    });
+  }
+
+  render();
 })();
 
 // ④ INDEX
